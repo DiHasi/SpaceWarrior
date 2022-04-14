@@ -41,7 +41,7 @@ public class PlayerLocal : MonoBehaviourPunCallbacks
             plane.SetActive(false);
             Cursor.visible = false;
             Rigidbody = GetComponent<Rigidbody>();
-            Rigidbody.maxAngularVelocity = 40000f;
+            Rigidbody.maxAngularVelocity = 500f;
         }
         
     }
