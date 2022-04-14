@@ -10,7 +10,7 @@ public class RayScript : MonoBehaviourPunCallbacks
     public RectTransform RectTransform;
     // public Transform gun;
     public Camera Camera;
-    public LayerMask _layerMask;
+    // public LayerMask _layerMask;
     public float maxDistance;
 
     public List<Transform> guns = new List<Transform>();
@@ -45,17 +45,8 @@ public class RayScript : MonoBehaviourPunCallbacks
         Ray ray = Camera.ScreenPointToRay(RectTransform.position);
         // print(RectTransform.position + " " + ray.direction);
         Debug.DrawRay(ray.origin, ray.direction * 1000, Color.yellow);
-
-        if (Physics.Raycast(ray, out raycastHit)  && raycastHit.distance > 65) 
-        {
-            target = raycastHit.point;
-            foreach (var gun in guns)
-            {
-                gun.LookAt(target);
-            }
-            // gun.LookAt(target);
-        }
-        else if (Physics.Raycast(ray, out raycastHit, maxDistance = Single.PositiveInfinity, ~_layerMask))
+        
+        if (Physics.Raycast(ray, out raycastHit, maxDistance = Single.PositiveInfinity))
         {
             target = raycastHit.point;
             foreach (var gun in guns)

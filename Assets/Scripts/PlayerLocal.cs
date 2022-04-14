@@ -12,13 +12,14 @@ public class PlayerLocal : MonoBehaviourPunCallbacks
 
     public GameObject camera;
 
+    public GameObject plane;
+
     public float force; 
     // public GameObject bullet;
     // public float cooldown = 0.5f;
     // public float time ;
     // public Transform bulletPoint;
-    public Light Light;
-    
+
     public float rotationSpeed = 1f;
     public float step = 1f;
     // public float rotationСoefficient = 1;
@@ -37,6 +38,7 @@ public class PlayerLocal : MonoBehaviourPunCallbacks
         if (photonView.IsMine)
         {
             StartPosition = Rect.position;
+            plane.SetActive(false);
             Cursor.visible = false;
             Rigidbody = GetComponent<Rigidbody>();
             Rigidbody.maxAngularVelocity = 40000f;
@@ -102,9 +104,6 @@ public class PlayerLocal : MonoBehaviourPunCallbacks
         
         if (Input.GetKey("i"))
             sensitivity -= 0.1f;
-        if (Input.GetKey("t"))
-            Light.enabled = false;
-
         if (Input.GetKey("o"))
             sensitivity += 0.1f;
         
@@ -149,8 +148,6 @@ public class PlayerLocal : MonoBehaviourPunCallbacks
         
         if (Input.GetKey("i"))
             sensitivity -= 0.1f;
-        if (Input.GetKey("t"))
-            Light.enabled = false;
 
         if (Input.GetKey("o"))
             sensitivity += 0.1f;
