@@ -16,6 +16,7 @@ public class Player : MonoBehaviourPunCallbacks
 
     public PlayerLocal PlayerLocal;
     public GameObject Canvas;
+    public GameObject camera;
 
     public string lastDamagePlayer;
 
@@ -55,6 +56,7 @@ public class Player : MonoBehaviourPunCallbacks
         }
         else
         {
+            PlayerLocal.plane.transform.LookAt(camera.transform);
             if (playerHp <= 0)
             {
                 dead = true;

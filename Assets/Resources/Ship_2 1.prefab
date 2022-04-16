@@ -573,6 +573,7 @@ MonoBehaviour:
   d: 0
   PlayerLocal: {fileID: 498207954720402963}
   Canvas: {fileID: 498207955553715839}
+  camera: {fileID: 498207955006484098}
   lastDamagePlayer: 
 --- !u!114 &5670559992968809100
 MonoBehaviour:
@@ -1172,7 +1173,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &4699761147123554609
 Transform:
   m_ObjectHideFlags: 0

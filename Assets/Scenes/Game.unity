@@ -1383,7 +1383,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e816fab75cae2a04cb04bfe75c21c218, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  player: {fileID: 5953783380993079695, guid: 33d7b97cea09f2142af9e6701699df29, type: 3}
+  player: {fileID: 8496823345627277643, guid: 33d7b97cea09f2142af9e6701699df29, type: 3}
   minX: -500
   minY: -500
   minZ: -500
