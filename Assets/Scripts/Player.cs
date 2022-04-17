@@ -16,7 +16,9 @@ public class Player : MonoBehaviourPunCallbacks
 
     public PlayerLocal PlayerLocal;
     public GameObject Canvas;
-    public GameObject camera;
+
+    public Camera Camera;
+    public GameObject plane;
 
     public string lastDamagePlayer;
 
@@ -56,11 +58,18 @@ public class Player : MonoBehaviourPunCallbacks
         }
         else
         {
-            PlayerLocal.plane.transform.LookAt(camera.transform);
+            
             if (playerHp <= 0)
             {
                 dead = true;
             }
+        }
+        plane.GetComponent<Renderer>().material.color = Color.cyan;
+        if (Camera == null)
+            Camera = FindObjectOfType<Camera>();
+        if (Camera != null)
+        {
+            plane.transform.LookAt(Camera.transform);
         }
     }
     // public void Dead()

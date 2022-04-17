@@ -38,12 +38,15 @@ public class PlayerLocal : MonoBehaviourPunCallbacks
         if (photonView.IsMine)
         {
             StartPosition = Rect.position;
-            plane.SetActive(false);
             Cursor.visible = false;
             Rigidbody = GetComponent<Rigidbody>();
             Rigidbody.maxAngularVelocity = 500f;
         }
-        
+
+        if (!photonView.IsMine)
+        {
+            plane.SetActive(true);
+        }
     }
     
     void LateUpdate()
