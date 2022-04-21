@@ -49,7 +49,7 @@ public class PlayerLocal : MonoBehaviourPunCallbacks
         }
     }
     
-    void LateUpdate()
+    void Update()
     {
         if (photonView.IsMine)
         {

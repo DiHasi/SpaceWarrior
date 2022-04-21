@@ -36,22 +36,29 @@ public class Bullet : MonoBehaviourPunCallbacks
             }
         }
     }
-    private void OnTriggerEnter2D(Collider2D collision)
+    private void OnTriggerEnter(Collider other)
     {
-        if (!collision.isTrigger)
+        if (!other.isTrigger)
         {
             GetComponent<PhotonView>().RPC("Del", RpcTarget.AllBuffered);
         }
     }
+    // private void OnCollisionEnter(Collision collision)
+    // {
+    //     if (!other.isTrigger)
+    //     {
+    //         GetComponent<PhotonView>().RPC("Del", RpcTarget.AllBuffered);
+    //     }
+    // }
+
     [PunRPC]
     public void Del()
     {
         foreach (var item in FindObjectsOfType<Player>())
         {
-            item.photonView.RPC("TakeDamage", RpcTarget.AllBuffered, (Vector2)transform.position, dmg, sender);
+            item.photonView.RPC("TakeDamage", RpcTarget.AllBuffered, dmg, sender);
         }
         // Destroy(Instantiate(explode.gameObject, transform.position, transform.rotation), 2);
         Destroy(gameObject);
-        
     }
 }

@@ -200,6 +200,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 971659930670883131, guid: 877a0cb608390364facef3cd6d0ee041, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1164704977919291775, guid: 877a0cb608390364facef3cd6d0ee041, type: 3}
       propertyPath: m_Layer
       value: 7
@@ -207,6 +211,18 @@ PrefabInstance:
     - target: {fileID: 1164704977919291775, guid: 877a0cb608390364facef3cd6d0ee041, type: 3}
       propertyPath: m_IsActive
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1952415260953493360, guid: 877a0cb608390364facef3cd6d0ee041, type: 3}
+      propertyPath: cooldown
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1952415260953493360, guid: 877a0cb608390364facef3cd6d0ee041, type: 3}
+      propertyPath: guns.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2088769069733466035, guid: 877a0cb608390364facef3cd6d0ee041, type: 3}
+      propertyPath: m_Enabled
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2423830358925082153, guid: 877a0cb608390364facef3cd6d0ee041, type: 3}
       propertyPath: m_Layer
@@ -300,9 +316,13 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6766633804586278650, guid: 877a0cb608390364facef3cd6d0ee041, type: 3}
+      propertyPath: m_IsTrigger
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6914569342517910687, guid: 877a0cb608390364facef3cd6d0ee041, type: 3}
       propertyPath: m_LocalScale.x
-      value: -0.22
+      value: 0.22
       objectReference: {fileID: 0}
     - target: {fileID: 6914569342517910687, guid: 877a0cb608390364facef3cd6d0ee041, type: 3}
       propertyPath: m_LocalScale.y

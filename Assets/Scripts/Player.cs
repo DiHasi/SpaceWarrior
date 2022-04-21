@@ -38,6 +38,7 @@ public class Player : MonoBehaviourPunCallbacks
             Destroy(PlayerLocal.camera.gameObject);
             Canvas.SetActive(false);
             gameObject.layer = 0;
+            gameObject.GetComponent<MeshCollider>().isTrigger = false;
         }
     }
 
@@ -57,8 +58,8 @@ public class Player : MonoBehaviourPunCallbacks
             }
             if (playerHp <= 0 )
             {
-                Dead();
-                playerHp = 100;
+                // Dead();
+                playerHp = 499;
             }
         }
         else
