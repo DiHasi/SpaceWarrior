@@ -37,13 +37,11 @@ public class RayScript : MonoBehaviourPunCallbacks
         {
             Debug.DrawLine(gun.position, raycastHit.point, Color.magenta);
         }
-        // Debug.DrawLine(gun.position, raycastHit.point, Color.magenta);
     }
 
     private void RaySolver()
     {
         Ray ray = Camera.ScreenPointToRay(RectTransform.position);
-        // print(RectTransform.position + " " + ray.direction);
         Debug.DrawRay(ray.origin, ray.direction * 1000, Color.yellow);
         
         if (Physics.Raycast(ray, out raycastHit, maxDistance = Single.PositiveInfinity, ~_layerMask))
@@ -53,17 +51,14 @@ public class RayScript : MonoBehaviourPunCallbacks
             {
                 gun.LookAt(target);
             }
-            // gun.LookAt(target);
         }
         else
         {
             var b = Ship.rotation;
-            // gun.transform.position = Ship.position;
             foreach (var gun in guns)
             {
                 gun.transform.rotation = Ship.rotation * Quaternion.Euler(15f, 0f, 0f);
             }
-            // gun.transform.rotation = Ship.rotation * Quaternion.Euler(15f, 0f, 0f);
         }
     }
 }

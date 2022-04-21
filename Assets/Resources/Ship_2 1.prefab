@@ -568,12 +568,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6154ea09ccdcf1d4cbb52e4c81af5bb6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerHp: 100
+  playerHp: 500
   k: 0
   d: 0
   PlayerLocal: {fileID: 498207954720402963}
   Canvas: {fileID: 498207955553715839}
-  camera: {fileID: 498207955006484098}
+  Camera: {fileID: 0}
+  plane: {fileID: 0}
   lastDamagePlayer: 
 --- !u!114 &5670559992968809100
 MonoBehaviour:
@@ -589,6 +590,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   RectTransform: {fileID: 498207953602636067}
   Camera: {fileID: 498207955006484103}
+  _layerMask:
+    serializedVersion: 2
+    m_Bits: 0
   maxDistance: 0
   guns: []
   Ship: {fileID: 498207954720402966}

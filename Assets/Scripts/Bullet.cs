@@ -8,6 +8,8 @@ public class Bullet : MonoBehaviourPunCallbacks
 {
     public Rigidbody bullet;
     public Transform capsule;
+    public string sender;
+    public int dmg;
     private float lifeTime;
     
     // Start is called before the first frame update
@@ -33,5 +35,23 @@ public class Bullet : MonoBehaviourPunCallbacks
                 PhotonNetwork.Destroy(gameObject);
             }
         }
+    }
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (!collision.isTrigger)
+        {
+            GetComponent<PhotonView>().RPC("Del", RpcTarget.AllBuffered);
+        }
+    }
+    [PunRPC]
+    public void Del()
+    {
+        foreach (var item in FindObjectsOfType<Player>())
+        {
+            item.photonView.RPC("TakeDamage", RpcTarget.AllBuffered, (Vector2)transform.position, dmg, sender);
+        }
+        // Destroy(Instantiate(explode.gameObject, transform.position, transform.rotation), 2);
+        Destroy(gameObject);
+        
     }
 }

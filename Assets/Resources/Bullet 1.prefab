@@ -68,6 +68,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bullet: {fileID: 729978001896978435}
   capsule: {fileID: 3444901766310482569}
+  sender: 
+  dmg: 50
 --- !u!96 &1319301835350826773
 TrailRenderer:
   serializedVersion: 2

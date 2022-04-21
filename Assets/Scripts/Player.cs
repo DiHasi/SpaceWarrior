@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Photon.Pun;
 using Photon.Pun.Demo.PunBasics;
+using TMPro;
 using UnityEngine;
 
 public class Player : MonoBehaviourPunCallbacks
@@ -16,6 +17,8 @@ public class Player : MonoBehaviourPunCallbacks
 
     public PlayerLocal PlayerLocal;
     public GameObject Canvas;
+
+    public TMP_Text hpCount;
 
     public Camera Camera;
     public GameObject plane;
@@ -34,14 +37,16 @@ public class Player : MonoBehaviourPunCallbacks
             PlayerLocal.enabled = false;
             Destroy(PlayerLocal.camera.gameObject);
             Canvas.SetActive(false);
+            gameObject.layer = 0;
         }
     }
 
     public void Update()
     {
-        if (playerHp > 100)
+        hpCount.text = $"hp: {playerHp}";
+        if (playerHp > 500)
         {
-            playerHp = 100;
+            playerHp = 500;
         }
         if (photonView.IsMine)
         {
@@ -50,11 +55,11 @@ public class Player : MonoBehaviourPunCallbacks
                 k = (int)photonView.Owner.CustomProperties["K"];
                 d = (int)photonView.Owner.CustomProperties["D"];
             }
-            // if (playerHp <= 0 )
-            // {
-            //     Dead();
-            //     playerHp = 100;
-            // }
+            if (playerHp <= 0 )
+            {
+                Dead();
+                playerHp = 100;
+            }
         }
         else
         {
@@ -72,40 +77,47 @@ public class Player : MonoBehaviourPunCallbacks
             plane.transform.LookAt(Camera.transform);
         }
     }
-    // public void Dead()
-    // {
-    //     if (photonView.IsMine)
-    //     {
-    //         if (dead == false)
-    //         {
-    //             if (lastDamagePlayer != "" && lastDamagePlayer != photonView.Owner.NickName)
-    //             {
-    //                 var ldp = PhotonNetwork.PlayerList.ToList().Find(x => x.NickName == lastDamagePlayer);
-    //                 if (ldp != null)
-    //                 {
-    //                     ExitGames.Client.Photon.Hashtable h = new ExitGames.Client.Photon.Hashtable();
-    //                     h.Add("K", (int)(((int)ldp.CustomProperties["K"]) + 1));
-    //                     h.Add("D", (int)ldp.CustomProperties["D"]);
-    //                     ldp.SetCustomProperties(h);
-    //                 }
-    //             }
-    //             d++;
-    //             SaveKD();
-    //             PhotonNetwork.Destroy(gameObject);
-    //             dead = true;
-    //             // FindObjectOfType<GameManager>().StartCoroutine(FindObjectOfType<GameManager>().Respawn());
-    //         }
-    //     }
-    // }
-    // public void SaveKD()
-    // {
-    //     ExitGames.Client.Photon.Hashtable h = new ExitGames.Client.Photon.Hashtable();
-    //     h.Add("K", k);
-    //     h.Add("D", d);
-    //     photonView.Owner.SetCustomProperties(h);
-    // }
-    // public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
-    // {
-    //     throw new NotImplementedException();
-    // }
+    public void Dead()
+    {
+        if (photonView.IsMine)
+        {
+            if (dead == false)
+            {
+                if (lastDamagePlayer != "" && lastDamagePlayer != photonView.Owner.NickName)
+                {
+                    var ldp = PhotonNetwork.PlayerList.ToList().Find(x => x.NickName == lastDamagePlayer);
+                    if (ldp != null)
+                    {
+                        ExitGames.Client.Photon.Hashtable h = new ExitGames.Client.Photon.Hashtable();
+                        h.Add("K", (int)(((int)ldp.CustomProperties["K"]) + 1));
+                        h.Add("D", (int)ldp.CustomProperties["D"]);
+                        ldp.SetCustomProperties(h);
+                    }
+                }
+                d++;
+                SaveKD();
+                PhotonNetwork.Destroy(gameObject);
+                dead = true;
+                // FindObjectOfType<GameManager>().StartCoroutine(FindObjectOfType<GameManager>().Respawn());
+            }
+        }
+    }
+    public void SaveKD()
+    {
+        ExitGames.Client.Photon.Hashtable h = new ExitGames.Client.Photon.Hashtable();
+        h.Add("K", k);
+        h.Add("D", d);
+        photonView.Owner.SetCustomProperties(h);
+    }
+    [PunRPC]
+    public void TakeDamage(int dmg, string actorName)
+    {
+        if (photonView.IsMine)
+        {
+            lastDamagePlayer = actorName;
+            playerHp -= dmg;
+            // timeLastDamage = 0; 
+            hpadd = 0;
+        }
+    } 
 }
