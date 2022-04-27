@@ -133,7 +133,7 @@ public class PlayerLocal : MonoBehaviourPunCallbacks
         
         if (Input.GetKey("s") && force > 0) 
         {
-            force -= step;
+            force -= step*2;
             if (force < 0)
                 force = 0;
         }

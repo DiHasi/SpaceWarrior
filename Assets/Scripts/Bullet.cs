@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Photon.Pun;
 using UnityEngine;
 
@@ -40,25 +41,19 @@ public class Bullet : MonoBehaviourPunCallbacks
     }
     private void OnTriggerEnter(Collider other)
     {
-        Debug.Log(other.GetComponent<PhotonView>().Owner.ActorNumber);
         if (!other.isTrigger)
         {
-            // Debug.Log("trigger!!!!!!!!!!" + " " + other.GetComponent<PhotonView>().Owner.CustomProperties["hp"]);
-            
-            Debug.Log($"{photonView.Owner.CustomProperties["Sender"]} take damage {other.GetComponent<PhotonView>().Owner.ActorNumber}, " +
-                      $"hp {other.GetComponent<PhotonView>().Owner.ActorNumber} = {(int)other.GetComponent<PhotonView>().Owner.CustomProperties["hp"] - dmg}");
-            // other.GetComponent<PhotonView>().RPC("TakeDamage", RpcTarget.AllBuffered, dmg, sender, -1);
-            // PhotonNetwork.Destroy(gameObject);
-            // photonView.RPC("Del", RpcTarget.All, );
-            // photonView.RPC("Del", RpcTarget.All, other.GetComponent<PhotonView>().Owner.ActorNumber);
-            // other.GetComponent<Player>().TakeDamage(dmg, sender);
-            // photonView.RPC("Del", RpcTarget.AllBuffered, other.GetComponent<PhotonView>().Owner.ActorNumber);
-            // other.GetComponent<PhotonView>().RPC("TakeDamage", RpcTarget.AllBuffered, dmg, sender);
-
             ExitGames.Client.Photon.Hashtable h = new ExitGames.Client.Photon.Hashtable();
-            h.Add("hp", (int)other.GetComponent<PhotonView>().Owner.CustomProperties["hp"] - dmg);
-            other.GetComponent<Renderer>().material.color = Color.red;
+            var rec = PhotonNetwork.PlayerList.ToList().Find(x => x.ActorNumber 
+                                                                  == other.GetComponent<PhotonView>().Owner.ActorNumber);
+
+            if (photonView.IsMine)
+            {
+                h.Add("hp", (int)rec.CustomProperties["hp"] - dmg);
+            }
+            // other.GetComponent<Renderer>().material.color = Color.red;
             other.GetComponent<PhotonView>().Owner.SetCustomProperties(h);
+
         }
     }
 
@@ -71,12 +66,14 @@ public class Bullet : MonoBehaviourPunCallbacks
     [PunRPC]
     public void Del(int receiver)
     {
+        var rec = PhotonNetwork.PlayerList.ToList().Find(x => x.ActorNumber == receiver);
         
-        foreach (var item in FindObjectsOfType<Player>())
-        {
-            item.photonView.RPC("TakeDamage", RpcTarget.All, dmg, sender, receiver);
-        }
-        // Destroy(Instantiate(explode.gameObject, transform.position, transform.rotation), 2);
+        // foreach (var item in FindObjectsOfType<Player>())
+        // {
+        //     if(item.photonView.Owner.)
+        //     item.photonView.RPC("TakeDamage", RpcTarget.All, dmg, sender, receiver);
+        // }
+
         if (photonView.IsMine)
         {
             PhotonNetwork.Destroy(gameObject);

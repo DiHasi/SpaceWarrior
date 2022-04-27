@@ -8,7 +8,7 @@ using Photon.Pun.Demo.PunBasics;
 using TMPro;
 using UnityEngine;
 
-public class Player : MonoBehaviourPunCallbacks
+public class Player : MonoBehaviourPunCallbacks, IPunObservable
 {
     public int playerHp;
     public int k, d;
@@ -121,15 +121,35 @@ public class Player : MonoBehaviourPunCallbacks
         photonView.Owner.SetCustomProperties(h);
     }
     [PunRPC]
-    public void TakeDamage()
+    public void TakeDamage(int dmg, string actorName, int receiver)
     {
-
-        // if(!photonView.IsMine)
-        //     return;
-        //
-        // lastDamagePlayer = actorName;
-        // playerHp -= dmg;
-        // // timeLastDamage = 0; 
-        // hpadd = 0;
+        if(!photonView.IsMine)
+            return;
+        if (photonView.IsMine)
+        {
+            if (photonView.Owner.ActorNumber == receiver)
+            {
+                lastDamagePlayer = actorName;
+                playerHp -= dmg;
+                // timeLastDamage = 0; 
+                hpadd = 0;
+            }
+        }
+        
     } 
+    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    {
+        if (stream.IsWriting)
+        {
+            stream.SendNext(playerHp);
+            stream.SendNext(k);
+            stream.SendNext(d);
+        }
+        else
+        {
+            playerHp = (int)stream.ReceiveNext();
+            k = (int)stream.ReceiveNext();
+            d = (int)stream.ReceiveNext();
+        }
+    }
 }
