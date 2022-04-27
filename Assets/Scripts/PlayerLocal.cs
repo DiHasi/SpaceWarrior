@@ -14,14 +14,18 @@ public class PlayerLocal : MonoBehaviourPunCallbacks
 
     public GameObject plane;
 
-    public float force; 
+
+    public float force;
+    
     // public GameObject bullet;
     // public float cooldown = 0.5f;
     // public float time ;
     // public Transform bulletPoint;
 
-    public float rotationSpeed = 1f;
-    public float step = 1f;
+    public float rotationSpeed = 10f;
+    public float step = 5f;
+
+    private float maxForce = 10000f;
     // public float rotationСoefficient = 1;
     // public float rotationСoefficient2 = 1;
 
@@ -123,8 +127,8 @@ public class PlayerLocal : MonoBehaviourPunCallbacks
         if (Input.GetKey("w"))
         {
             force += step;
-            if (force > 2000)
-                force = 2000;
+            if (force > maxForce)
+                force = maxForce;
         }
         
         if (Input.GetKey("s") && force > 0) 
@@ -148,7 +152,8 @@ public class PlayerLocal : MonoBehaviourPunCallbacks
             // Rect.position = position;
             Rigidbody.AddRelativeTorque(0f, (sensitivity * rotationSpeed/3), 0f);
         }
-        
+
+
         if (Input.GetKey("i"))
             sensitivity -= 0.1f;
 
@@ -156,5 +161,10 @@ public class PlayerLocal : MonoBehaviourPunCallbacks
             sensitivity += 0.1f;
         
         Rigidbody.AddRelativeForce(0f, 0f, force);
+    }
+
+    public void Exit()
+    {
+        Application.Quit();
     }
 }

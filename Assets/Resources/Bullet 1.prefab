@@ -69,7 +69,7 @@ MonoBehaviour:
   bullet: {fileID: 729978001896978435}
   capsule: {fileID: 3444901766310482569}
   sender: 
-  dmg: 50
+  dmg: 10
 --- !u!96 &1319301835350826773
 TrailRenderer:
   serializedVersion: 2
@@ -111,7 +111,7 @@ TrailRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Time: 1.03
+  m_Time: 0.1
   m_Parameters:
     serializedVersion: 3
     widthMultiplier: 1

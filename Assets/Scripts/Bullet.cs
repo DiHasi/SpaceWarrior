@@ -30,35 +30,56 @@ public class Bullet : MonoBehaviourPunCallbacks
         if (photonView.IsMine)
         {
             lifeTime += Time.deltaTime;
-            if (lifeTime > 3f)
+            if (lifeTime > 9f)
             {
+                // Debug.Log($"{lifeTime} {photonView.Owner.ActorNumber}");
                 PhotonNetwork.Destroy(gameObject);
+                lifeTime = 0f;
             }
         }
     }
     private void OnTriggerEnter(Collider other)
     {
+        Debug.Log(other.GetComponent<PhotonView>().Owner.ActorNumber);
         if (!other.isTrigger)
         {
-            GetComponent<PhotonView>().RPC("Del", RpcTarget.AllBuffered);
+            // Debug.Log("trigger!!!!!!!!!!" + " " + other.GetComponent<PhotonView>().Owner.CustomProperties["hp"]);
+            
+            Debug.Log($"{photonView.Owner.CustomProperties["Sender"]} take damage {other.GetComponent<PhotonView>().Owner.ActorNumber}, " +
+                      $"hp {other.GetComponent<PhotonView>().Owner.ActorNumber} = {(int)other.GetComponent<PhotonView>().Owner.CustomProperties["hp"] - dmg}");
+            // other.GetComponent<PhotonView>().RPC("TakeDamage", RpcTarget.AllBuffered, dmg, sender, -1);
+            // PhotonNetwork.Destroy(gameObject);
+            // photonView.RPC("Del", RpcTarget.All, );
+            // photonView.RPC("Del", RpcTarget.All, other.GetComponent<PhotonView>().Owner.ActorNumber);
+            // other.GetComponent<Player>().TakeDamage(dmg, sender);
+            // photonView.RPC("Del", RpcTarget.AllBuffered, other.GetComponent<PhotonView>().Owner.ActorNumber);
+            // other.GetComponent<PhotonView>().RPC("TakeDamage", RpcTarget.AllBuffered, dmg, sender);
+
+            ExitGames.Client.Photon.Hashtable h = new ExitGames.Client.Photon.Hashtable();
+            h.Add("hp", (int)other.GetComponent<PhotonView>().Owner.CustomProperties["hp"] - dmg);
+            other.GetComponent<Renderer>().material.color = Color.red;
+            other.GetComponent<PhotonView>().Owner.SetCustomProperties(h);
         }
     }
-    // private void OnCollisionEnter(Collision collision)
-    // {
-    //     if (!other.isTrigger)
-    //     {
-    //         GetComponent<PhotonView>().RPC("Del", RpcTarget.AllBuffered);
-    //     }
-    // }
 
     [PunRPC]
-    public void Del()
+    public void Set(string sn)
     {
+        sender = sn;
+    }
+    
+    [PunRPC]
+    public void Del(int receiver)
+    {
+        
         foreach (var item in FindObjectsOfType<Player>())
         {
-            item.photonView.RPC("TakeDamage", RpcTarget.AllBuffered, dmg, sender);
+            item.photonView.RPC("TakeDamage", RpcTarget.All, dmg, sender, receiver);
         }
         // Destroy(Instantiate(explode.gameObject, transform.position, transform.rotation), 2);
-        Destroy(gameObject);
+        if (photonView.IsMine)
+        {
+            PhotonNetwork.Destroy(gameObject);
+        }
     }
 }

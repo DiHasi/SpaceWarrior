@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using ExitGames.Client.Photon;
 using Photon.Pun;
 using Photon.Pun.Demo.PunBasics;
 using TMPro;
@@ -19,6 +20,7 @@ public class Player : MonoBehaviourPunCallbacks
     public GameObject Canvas;
 
     public TMP_Text hpCount;
+    public TMP_Text name;
 
     public Camera Camera;
     public GameObject plane;
@@ -27,6 +29,8 @@ public class Player : MonoBehaviourPunCallbacks
 
     void Start()
     {
+        // ExitGames.Client.Photon.Hashtable h = new ExitGames.Client.Photon.Hashtable();
+        // h.Add("hp", playerHp);
         transform.name = photonView.Owner.NickName;
     }
 
@@ -44,13 +48,19 @@ public class Player : MonoBehaviourPunCallbacks
 
     public void Update()
     {
-        hpCount.text = $"hp: {playerHp}";
+        
         if (playerHp > 500)
         {
             playerHp = 500;
         }
         if (photonView.IsMine)
         {
+            hpCount.text = $"hp: {playerHp}";
+            name.text = $"name: {photonView.Owner.ActorNumber}";
+            if (photonView.Owner.CustomProperties["hp"] != null)
+            {
+                playerHp = (int)photonView.Owner.CustomProperties["hp"];
+            }
             if (photonView.Owner.CustomProperties["K"] != null)
             {
                 k = (int)photonView.Owner.CustomProperties["K"];
@@ -58,13 +68,13 @@ public class Player : MonoBehaviourPunCallbacks
             }
             if (playerHp <= 0 )
             {
+                PlayerLocal.GetComponent<Renderer>().material.color = Color.red;
                 // Dead();
                 playerHp = 499;
             }
         }
         else
         {
-            
             if (playerHp <= 0)
             {
                 dead = true;
@@ -111,14 +121,15 @@ public class Player : MonoBehaviourPunCallbacks
         photonView.Owner.SetCustomProperties(h);
     }
     [PunRPC]
-    public void TakeDamage(int dmg, string actorName)
+    public void TakeDamage()
     {
-        if (photonView.IsMine)
-        {
-            lastDamagePlayer = actorName;
-            playerHp -= dmg;
-            // timeLastDamage = 0; 
-            hpadd = 0;
-        }
+
+        // if(!photonView.IsMine)
+        //     return;
+        //
+        // lastDamagePlayer = actorName;
+        // playerHp -= dmg;
+        // // timeLastDamage = 0; 
+        // hpadd = 0;
     } 
 }

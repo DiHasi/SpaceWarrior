@@ -32,6 +32,12 @@ public class PhotonManager : MonoBehaviourPunCallbacks
 
     public override void OnJoinedRoom()
     {
+        ExitGames.Client.Photon.Hashtable h = new ExitGames.Client.Photon.Hashtable();
+        h.Add("K", 0);
+        h.Add("D", 0);
+        h.Add("hp", 500);
+        h.Add("Sender", "");
+        PhotonNetwork.LocalPlayer.SetCustomProperties(h);
         PhotonNetwork.LoadLevel("Game");
     }
 }
