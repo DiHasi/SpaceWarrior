@@ -1,21 +1,26 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using Photon.Pun;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class PlayerLocal : MonoBehaviourPunCallbacks
 {
     public Rigidbody Rigidbody;
     
-    public RectTransform Rect;
+    public GameObject rect;
 
     public GameObject camera;
 
     public GameObject plane;
-
+    public GameObject gun;
 
     public float force;
+    public bool PauseMenuActive = false;
+    public Canvas Menu;
+    public CrosshairManager CrosshairManager;
     
     // public GameObject bullet;
     // public float cooldown = 0.5f;
@@ -41,7 +46,7 @@ public class PlayerLocal : MonoBehaviourPunCallbacks
     {
         if (photonView.IsMine)
         {
-            StartPosition = Rect.position;
+            StartPosition = rect.transform.position;
             Cursor.visible = false;
             Rigidbody = GetComponent<Rigidbody>();
             Rigidbody.maxAngularVelocity = 500f;
@@ -57,64 +62,16 @@ public class PlayerLocal : MonoBehaviourPunCallbacks
     {
         if (photonView.IsMine)
         {
-            Mover2();
-        }
-    }
-    void Mover()
-    {
-        float Xpos = 0f;
-        float Ypos = 0f;
-        if (Mathf.Abs(StartPosition.x - Rect.position.x) < Limit1 && Mathf.Abs(StartPosition.y - Rect.position.y) < Limit1)
-        {
-            Xpos = Ypos = 0f;
-        }
-        if (Mathf.Abs(StartPosition.x - Rect.position.x) >= Limit1 && Mathf.Abs(StartPosition.y - Rect.position.y) >= Limit1)
-        {
-            Xpos = Ypos = 1f;
-        }
-        if (Mathf.Abs(StartPosition.x - Rect.position.x) >= Limit2 && Mathf.Abs(StartPosition.y - Rect.position.y) >= Limit2)
-        {
-            Xpos = Ypos = 3f;
-        }
-        
-        print(Xpos + " " + Ypos);
-        Rigidbody.AddRelativeTorque(-sensitivity * rotationSpeed * Ypos, 0f, -sensitivity * rotationSpeed * Xpos);
+            if (Input.GetKeyUp(KeyCode.Escape))
+            {
+                SwitchPauseMenu();
+            }
 
-        if (Input.GetKey("w"))
-        {
-            force += step;
-            if (force > 700)
-                force = 700;
+            if (!PauseMenuActive)
+            {
+                Mover2();
+            }
         }
-        
-        if (Input.GetKey("s") && force > 0) 
-        {
-            force -= step;
-            if (force < 0)
-                force = 0;
-        }
-
-        if (Input.GetKey("a"))
-        {
-            // var position = Rect.position;
-            // position += new Vector3((-sensitivity * rotationSpeed), 0f);
-            // Rect.position = position;
-            Rigidbody.AddRelativeTorque(0f, (-sensitivity * rotationSpeed/3), 0f);
-        }
-        if (Input.GetKey("d"))
-        {
-            // var position = Rect.position;
-            // position += new Vector3((sensitivity * rotationSpeed), 0f);
-            // Rect.position = position;
-            Rigidbody.AddRelativeTorque(0f, (sensitivity * rotationSpeed/3), 0f);
-        }
-        
-        if (Input.GetKey("i"))
-            sensitivity -= 0.1f;
-        if (Input.GetKey("o"))
-            sensitivity += 0.1f;
-        
-        Rigidbody.AddRelativeForce(0f, 0f, force);
     }
     void Mover2()
     {
@@ -163,6 +120,19 @@ public class PlayerLocal : MonoBehaviourPunCallbacks
         Rigidbody.AddRelativeForce(0f, 0f, force);
     }
 
+    private void SwitchPauseMenu()
+    {
+        if (photonView.IsMine)
+        {
+            CrosshairManager.enabled = PauseMenuActive;
+            rect.SetActive(PauseMenuActive);
+            gun.gameObject.GetComponent<GunScript>().enabled = PauseMenuActive;
+            PauseMenuActive = !PauseMenuActive;
+            Menu.enabled = PauseMenuActive;
+            Cursor.visible = PauseMenuActive;
+        }
+        // GetComponent<PlayerLocal>().enabled = PauseMenuActive;
+    }
     public void Exit()
     {
         Application.Quit();

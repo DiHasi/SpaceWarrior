@@ -49,23 +49,21 @@ public class GunScript : MonoBehaviourPunCallbacks
                 }
 
             }
-            // if (Input.GetKeyUp(KeyCode.Escape))
-            // {
-            //     if (!a)
-            //     {
-            //         GetComponent<PlayerLocal>().enabled = false;
-            //         a = true;
-            //         Menu.enabled = true;
-            //         Cursor.visible = true;
-            //     }
-            //     else
-            //     {
-            //         GetComponent<PlayerLocal>().enabled = true;
-            //         a = false;
-            //         Menu.enabled = false;
-            //         Cursor.visible = false;
-            //     }
-            // }
+            if (Input.GetKey(KeyCode.Mouse1))
+            {
+                GameObject prefab = bullet;
+                prefab.GetComponent<TrailRenderer>().time = trailRenderTime * 5;
+
+                    var b1 = PhotonNetwork.Instantiate(prefab.name, guns[0].transform.position, guns[0].transform.rotation);
+                    // b1.GetPhotonView().RPC("Set", RpcTarget.All, photonView.Owner.ActorNumber.ToString());
+                    ExitGames.Client.Photon.Hashtable h = new ExitGames.Client.Photon.Hashtable();
+                    h.Add("Sender", photonView.Owner.ActorNumber.ToString());
+                    b1.GetComponent<PhotonView>().Owner.SetCustomProperties(h);
+                    _time = 0f;
+                
+
+            }
+            
             _time += Time.deltaTime;
         }
     }

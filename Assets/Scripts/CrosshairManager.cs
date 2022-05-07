@@ -24,12 +24,12 @@ public class CrosshairManager : MonoBehaviourPunCallbacks
         {
             float mouseX = Input.GetAxis("Mouse X");
             float mouseY = Input.GetAxis("Mouse Y");
-            // print(Rect.position.x + " " + Rect.position.y);
             var position = Rect.position;
             position += new Vector3(Mathf.Clamp(mouseX * speed, -5, 5),
-                Mathf.Clamp(mouseY * speed, -5, 5));
+                    Mathf.Clamp(mouseY * speed, -5, 5));
             position = Vector3.Lerp(position, pos, 0.01f);
             Rect.position = position;
+
         }
     }
 }
