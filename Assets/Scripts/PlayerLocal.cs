@@ -66,57 +66,56 @@ public class PlayerLocal : MonoBehaviourPunCallbacks
             {
                 SwitchPauseMenu();
             }
-
-            if (!PauseMenuActive)
-            {
-                Mover2();
-            }
+            
+            Mover2();
         }
     }
     void Mover2()
     {
-        float mouseX = Input.GetAxis("Mouse X");
-        float mouseY = Input.GetAxis("Mouse Y");
-        if (mouseX != 0 || mouseY != 0)
+        if (!PauseMenuActive)
         {
-            Rigidbody.AddRelativeTorque(-sensitivity * rotationSpeed * mouseY, 0f, -sensitivity * rotationSpeed * mouseX);
-        }
-        if (Input.GetKey("w"))
-        {
-            force += step;
-            if (force > maxForce)
-                force = maxForce;
-        }
+            float mouseX = Input.GetAxis("Mouse X");
+            float mouseY = Input.GetAxis("Mouse Y");
+            if (mouseX != 0 || mouseY != 0)
+            {
+                Rigidbody.AddRelativeTorque(-sensitivity * rotationSpeed * mouseY, 0f, -sensitivity * rotationSpeed * mouseX);
+            }
+            if (Input.GetKey("w"))
+            {
+                force += step;
+                if (force > maxForce)
+                    force = maxForce;
+            }
         
-        if (Input.GetKey("s") && force > 0) 
-        {
-            force -= step*2;
-            if (force < 0)
-                force = 0;
+            if (Input.GetKey("s") && force > 0) 
+            {
+                force -= step*2;
+                if (force < 0)
+                    force = 0;
+            }
+
+            if (Input.GetKey("a"))
+            {
+                // var position = Rect.position;
+                // position += new Vector3((-sensitivity * rotationSpeed), 0f);
+                // Rect.position = position;
+                Rigidbody.AddRelativeTorque(0f, (-sensitivity * rotationSpeed/3), 0f);
+            }
+            if (Input.GetKey("d"))
+            {
+                // var position = Rect.position;
+                // position += new Vector3((sensitivity * rotationSpeed), 0f);
+                // Rect.position = position;
+                Rigidbody.AddRelativeTorque(0f, (sensitivity * rotationSpeed/3), 0f);
+            }
+
+
+            if (Input.GetKey("i"))
+                sensitivity -= 0.1f;
+
+            if (Input.GetKey("o"))
+                sensitivity += 0.1f;
         }
-
-        if (Input.GetKey("a"))
-        {
-            // var position = Rect.position;
-            // position += new Vector3((-sensitivity * rotationSpeed), 0f);
-            // Rect.position = position;
-            Rigidbody.AddRelativeTorque(0f, (-sensitivity * rotationSpeed/3), 0f);
-        }
-        if (Input.GetKey("d"))
-        {
-            // var position = Rect.position;
-            // position += new Vector3((sensitivity * rotationSpeed), 0f);
-            // Rect.position = position;
-            Rigidbody.AddRelativeTorque(0f, (sensitivity * rotationSpeed/3), 0f);
-        }
-
-
-        if (Input.GetKey("i"))
-            sensitivity -= 0.1f;
-
-        if (Input.GetKey("o"))
-            sensitivity += 0.1f;
-        
         Rigidbody.AddRelativeForce(0f, 0f, force);
     }
 

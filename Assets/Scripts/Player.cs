@@ -100,7 +100,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                     if (ldp != null)
                     {
                         ExitGames.Client.Photon.Hashtable h = new ExitGames.Client.Photon.Hashtable();
-                        h.Add("K", (int)(((int)ldp.CustomProperties["K"]) + 1));
+                        h.Add("K", ((int)ldp.CustomProperties["K"]) + 1);
                         h.Add("D", (int)ldp.CustomProperties["D"]);
                         ldp.SetCustomProperties(h);
                     }
