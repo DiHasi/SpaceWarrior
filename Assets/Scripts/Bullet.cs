@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Photon.Pun;
+using UnityEditor.UIElements;
 using UnityEngine;
 
 public class Bullet : MonoBehaviourPunCallbacks
@@ -12,12 +13,14 @@ public class Bullet : MonoBehaviourPunCallbacks
     public string sender;
     public int dmg;
     private float lifeTime;
+
+    public float BulletSpeed;
     
     // Start is called before the first frame update
     void Start()
     {
         capsule.GetComponent<MeshRenderer>().enabled = false;
-        bullet.AddRelativeForce(0f, 0f, 50000f); 
+        bullet.AddRelativeForce(0f, 0f, BulletSpeed); 
     }
 
     private void Awake()

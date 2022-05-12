@@ -71,6 +71,7 @@ MonoBehaviour:
   capsule: {fileID: 3444901766310482569}
   sender: 
   dmg: 10
+  BulletSpeed: 80000
 --- !u!96 &1319301835350826773
 TrailRenderer:
   serializedVersion: 2

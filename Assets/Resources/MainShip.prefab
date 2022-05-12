@@ -1574,12 +1574,13 @@ MonoBehaviour:
   camera: {fileID: 5953783380371057477}
   plane: {fileID: 4364386817248695441}
   gun: {fileID: 7442371092495239816}
-  force: 10000
+  force: 15000
   PauseMenuActive: 0
   Menu: {fileID: 2958725690056539813}
   CrosshairManager: {fileID: 5953783380795197469}
   rotationSpeed: 1000
   step: 20
+  maxForce: 15000
   sensitivity: 10
   Limit1: 10
   Limit2: 90

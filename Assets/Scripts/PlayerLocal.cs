@@ -30,7 +30,7 @@ public class PlayerLocal : MonoBehaviourPunCallbacks
     public float rotationSpeed = 10f;
     public float step = 5f;
 
-    private float maxForce = 10000f;
+    public float maxForce = 10000f;
     // public float rotationСoefficient = 1;
     // public float rotationСoefficient2 = 1;
 
