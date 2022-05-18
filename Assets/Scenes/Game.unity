@@ -1784,7 +1784,7 @@ MonoBehaviour:
   Camera: {fileID: 183834713}
   Canvas: {fileID: 1142690779}
   body: {fileID: 0}
-  nextTeam: 1
+  nextTeam: 2
   speedRot: 0.00025
 --- !u!4 &1423720037
 Transform:
