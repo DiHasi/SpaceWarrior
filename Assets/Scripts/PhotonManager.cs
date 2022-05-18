@@ -36,6 +36,7 @@ public class PhotonManager : MonoBehaviourPunCallbacks
         h.Add("K", 0);
         h.Add("D", 0);
         h.Add("hp", 500);
+        h.Add("Team", 0);
         h.Add("Sender", "");
         PhotonNetwork.LocalPlayer.SetCustomProperties(h);
         PhotonNetwork.LoadLevel("Game");

@@ -1,18 +1,22 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using ExitGames.Client.Photon;
 using Photon.Pun;
 using Photon.Pun.Demo.PunBasics;
 using TMPro;
 using UnityEngine;
+using Debug = UnityEngine.Debug;
 
 public class Player : MonoBehaviourPunCallbacks, IPunObservable
 {
     public int playerHp;
     public int k, d;
-    
+    public GameObject player;
+
+    public int Team;
     float hpadd = 0;
     bool dead = false;
 
@@ -27,15 +31,24 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
     public string lastDamagePlayer;
 
+    public int myTeam;
+    public GameObject Avatar;
+    public GameManagerTeamFight GS;
+
+
+
+    private bool flag = false;
     void Start()
     {
-        // ExitGames.Client.Photon.Hashtable h = new ExitGames.Client.Photon.Hashtable();
-        // h.Add("hp", playerHp);
-        transform.name = photonView.Owner.NickName;
+        // if (photonView.IsMine)
+        // {
+        //     // photonView.RPC("RPC_GetTeam", RpcTarget.MasterClient);
+        // }
     }
-
+    
     private void Awake()
     {
+        photonView.RPC("RPC_GetTeam", RpcTarget.MasterClient);
         if (!photonView.IsMine)
         {
             PlayerLocal.enabled = false;
@@ -45,9 +58,32 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             gameObject.GetComponent<MeshCollider>().isTrigger = false;
         }
     }
-
+    
+    
     public void Update()
     {
+        if (photonView.IsMine)
+        {
+            var rec = PhotonNetwork.PlayerList.ToList().Find(x => x.ActorNumber
+                                                                  == photonView.Owner.ActorNumber);
+            if (rec.CustomProperties["Team"] != null && !flag)
+            {
+                if ((int) rec.CustomProperties["Team"] == 1)
+                {
+                    photonView.transform.position = new Vector3(0, 0, -7000);
+                }
+                else
+                {
+                    photonView.transform.position = new Vector3(0, 0, 7000);
+                    photonView.transform.rotation = Quaternion.Euler(0, 180, 0);
+                }
+                gameObject.GetComponent<Renderer>().enabled = true;
+                gameObject.GetComponent<PlayerLocal>().enabled = true;
+                photonView.RPC("RPC_GetTeam", RpcTarget.MasterClient);
+                // Debug.LogError(photonView.Owner.ActorNumber + " - " + 2 + " " + GameObject.Find("GameManager").GetComponent<GameManagerTeamFight>().nextTeam);
+                flag = true;
+            }
+        }
         
         if (playerHp > 500)
         {
@@ -55,7 +91,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         }
         if (photonView.IsMine)
         {
-            hpCount.text = $"hp: {playerHp}";
+            hpCount.text = $"hp: {playerHp} team: {photonView.Owner.CustomProperties["Team"]}";
             name.text = $"name: {photonView.Owner.ActorNumber}";
             if (photonView.Owner.CustomProperties["hp"] != null)
             {
@@ -152,4 +188,20 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             d = (int)stream.ReceiveNext();
         }
     }
+
+    [PunRPC]
+    public void RPC_GetTeam()
+    {
+        // myTeam = GameObject.Find("GameManager").GetComponent<GameManagerTeamFight>().nextTeam;
+        // myTeam = GameManagerTeamFight.GS.nextTeam;
+        // GameManagerTeamFight.GS.UpdateTeam();
+        // photonView.RPC("RPC_SentTeam", RpcTarget.OthersBuffered, myTeam);
+        
+        GameObject.Find("GameManager").GetComponent<GameManagerTeamFight>().UpdateTeam();
+    }
+    // [PunRPC]
+    // void RPC_SentTeam(int whichTeam)
+    // {
+    //     myTeam = whichTeam;
+    // }
 }

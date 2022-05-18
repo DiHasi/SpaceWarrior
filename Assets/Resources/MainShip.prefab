@@ -30,7 +30,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1190675267029663207}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
@@ -225,7 +225,7 @@ RectTransform:
   m_Children:
   - {fileID: 1268226072274265243}
   m_Father: {fileID: 1190675267029663207}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -678,9 +678,9 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
+  - {fileID: 162301561621070633}
   - {fileID: 2097736610696556570}
   - {fileID: 85184942426227946}
-  - {fileID: 162301561621070633}
   m_Father: {fileID: 5953783379853231035}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1009,7 +1009,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1190675267029663207}
-  m_RootOrder: 2
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -1623,6 +1623,8 @@ MonoBehaviour:
   playerHp: 500
   k: 0
   d: 0
+  player: {fileID: 0}
+  Team: 1
   PlayerLocal: {fileID: 5953783380690168788}
   Canvas: {fileID: 5953783379853231032}
   hpCount: {fileID: 1724266945745260537}
@@ -1630,6 +1632,9 @@ MonoBehaviour:
   Camera: {fileID: 5953783380371057472}
   plane: {fileID: 4364386817248695441}
   lastDamagePlayer: 
+  myTeam: 0
+  Avatar: {fileID: 0}
+  GS: {fileID: 0}
 --- !u!114 &1943315658053373771
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1760,6 +1765,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5953783380993079694}
+  - component: {fileID: 7727481391579367575}
   m_Layer: 0
   m_Name: MainShip
   m_TagString: Untagged
@@ -1782,6 +1788,28 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7727481391579367575
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5953783380993079695}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 0
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &5953783381327704364
 GameObject:
   m_ObjectHideFlags: 0

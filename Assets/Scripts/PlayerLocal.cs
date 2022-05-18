@@ -82,14 +82,14 @@ public class PlayerLocal : MonoBehaviourPunCallbacks
             }
             if (Input.GetKey("w"))
             {
-                force += step;
+                force += step * 4;
                 if (force > maxForce)
                     force = maxForce;
             }
         
             if (Input.GetKey("s") && force > 0) 
             {
-                force -= step*2;
+                force -= step*8;
                 if (force < 0)
                     force = 0;
             }

@@ -42,6 +42,9 @@ MonoBehaviour:
   - Del
   - TakeDamage
   - Set
+  - RPC_GetTeam
+  - RPC_SentTeam
+  - UpdateTeam
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1
