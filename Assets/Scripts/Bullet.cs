@@ -44,19 +44,26 @@ public class Bullet : MonoBehaviourPunCallbacks
     }
     private void OnTriggerEnter(Collider other)
     {
-        if (!other.isTrigger)
+        
+        if (!other.isTrigger && !other.CompareTag("Object"))
         {
-            ExitGames.Client.Photon.Hashtable h = new ExitGames.Client.Photon.Hashtable();
-            var rec = PhotonNetwork.PlayerList.ToList().Find(x => x.ActorNumber 
-                                                                  == other.GetComponent<PhotonView>().Owner.ActorNumber);
-
-            if (photonView.IsMine)
-            {
-                h.Add("hp", (int)rec.CustomProperties["hp"] - dmg);
-            }
-            // other.GetComponent<Renderer>().material.color = Color.red;
-            other.GetComponent<PhotonView>().Owner.SetCustomProperties(h);
-
+            var a = other.transform.parent.gameObject;
+            Debug.Log(a.tag);
+            // ExitGames.Client.Photon.Hashtable h = new ExitGames.Client.Photon.Hashtable();
+            // var rec = PhotonNetwork.PlayerList.ToList().Find(x => x.ActorNumber 
+            //                                                       == other.GetComponent<PhotonView>().Owner.ActorNumber);
+            //
+            // if (photonView.IsMine)
+            // {
+            //     h.Add("hp", (int)rec.CustomProperties["hp"] - dmg);
+            // }
+            // // other.GetComponent<Renderer>().material.color = Color.red;
+            // other.GetComponent<PhotonView>().Owner.SetCustomProperties(h);
+            // var plr = PhotonNetwork.PlayerList.ToList().Find(x => x.UserId
+            //                                                       == photonView.Owner.UserId);
+            // Debug.Log( other.GetComponent<PhotonView>().ViewID);
+            // photonView.RPC("TakeDamage", RpcTarget.All, dmg, "test");
+            a.GetComponent<PhotonView>().RPC("TakeDamage", RpcTarget.All, dmg, "test");
         }
     }
 

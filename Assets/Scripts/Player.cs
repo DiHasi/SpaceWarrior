@@ -1,3 +1,4 @@
+#nullable enable
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -33,8 +34,9 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
     public int myTeam;
     public GameObject Avatar;
-    public GameManagerTeamFight GS;
 
+
+    public GameObject Collider;
 
 
     private bool flag = false;
@@ -48,6 +50,8 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     
     private void Awake()
     {
+        
+        // Debug.Log(661 + " awake " + (int)photonView.Owner.CustomProperties["hp"]);
         photonView.RPC("RPC_GetTeam", RpcTarget.MasterClient);
         if (!photonView.IsMine)
         {
@@ -57,31 +61,47 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             gameObject.layer = 0;
             gameObject.GetComponent<MeshCollider>().isTrigger = false;
         }
+
+        if (photonView.IsMine)
+        {
+            Collider.SetActive(false);
+        }
     }
     
     
     public void Update()
     {
+        photonView.Owner.CustomProperties.ToList().ForEach(p => Debug.Log("55" + p));
         if (photonView.IsMine)
         {
-            var rec = PhotonNetwork.PlayerList.ToList().Find(x => x.ActorNumber
-                                                                  == photonView.Owner.ActorNumber);
+            
+            // Debug.Log(661 + " start " + (int)photonView.Owner.CustomProperties["hp"]);
+            var rec = PhotonNetwork.PlayerList.ToList().Find(x => x.UserId
+                                                                  == photonView.Owner.UserId);
             if (rec.CustomProperties["Team"] != null && !flag)
             {
                 if ((int) rec.CustomProperties["Team"] == 1)
                 {
-                    photonView.transform.position = new Vector3(0, 0, -7000);
+                    photonView.transform.position = new Vector3(0, 0, -4000);
                 }
                 else
                 {
-                    photonView.transform.position = new Vector3(0, 0, 7000);
+                    photonView.transform.position = new Vector3(0, 0, 4000);
                     photonView.transform.rotation = Quaternion.Euler(0, 180, 0);
                 }
-                gameObject.GetComponent<Renderer>().enabled = true;
-                gameObject.GetComponent<PlayerLocal>().enabled = true;
+                
                 photonView.RPC("RPC_GetTeam", RpcTarget.MasterClient);
                 // Debug.LogError(photonView.Owner.ActorNumber + " - " + 2 + " " + GameObject.Find("GameManager").GetComponent<GameManagerTeamFight>().nextTeam);
                 flag = true;
+            }
+
+            GameObject? gm = GameObject.Find("GameManager");
+            if (flag && gm.GetComponent<GameManagerTeamFight>().isStart)
+            {
+                gameObject.GetComponent<Renderer>().enabled = true;
+                gameObject.GetComponent<PlayerLocal>().enabled = true;
+                gameObject.GetComponent<PlayerLocal>().camera.SetActive(true);
+                Canvas.SetActive(true);
             }
         }
         
@@ -92,17 +112,17 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         if (photonView.IsMine)
         {
             hpCount.text = $"hp: {playerHp} team: {photonView.Owner.CustomProperties["Team"]}";
-            name.text = $"name: {photonView.Owner.ActorNumber}";
-            if (photonView.Owner.CustomProperties["hp"] != null)
-            {
-                playerHp = (int)photonView.Owner.CustomProperties["hp"];
-            }
+            name.text = $"name: {photonView.ViewID}";
+            // if (photonView.Owner.CustomProperties["hp"] != null)
+            // {
+            //     playerHp = (int)photonView.Owner.CustomProperties["hp"];
+            // }
             if (photonView.Owner.CustomProperties["K"] != null)
             {
                 k = (int)photonView.Owner.CustomProperties["K"];
                 d = (int)photonView.Owner.CustomProperties["D"];
             }
-            if (playerHp <= 0 )
+            if (playerHp <= 0)
             {
                 PlayerLocal.GetComponent<Renderer>().material.color = Color.red;
                 // Dead();
@@ -157,19 +177,14 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         photonView.Owner.SetCustomProperties(h);
     }
     [PunRPC]
-    public void TakeDamage(int dmg, string actorName, int receiver)
+    public void TakeDamage(int dmg, string actorName)
     {
         if(!photonView.IsMine)
             return;
         if (photonView.IsMine)
         {
-            if (photonView.Owner.ActorNumber == receiver)
-            {
-                lastDamagePlayer = actorName;
-                playerHp -= dmg;
-                // timeLastDamage = 0; 
-                hpadd = 0;
-            }
+            lastDamagePlayer = actorName;
+            playerHp -= dmg;
         }
         
     } 

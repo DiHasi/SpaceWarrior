@@ -22,10 +22,6 @@ public class PlayerLocal : MonoBehaviourPunCallbacks
     public Canvas Menu;
     public CrosshairManager CrosshairManager;
     
-    // public GameObject bullet;
-    // public float cooldown = 0.5f;
-    // public float time ;
-    // public Transform bulletPoint;
 
     public float rotationSpeed = 10f;
     public float step = 5f;
@@ -99,14 +95,14 @@ public class PlayerLocal : MonoBehaviourPunCallbacks
                 // var position = Rect.position;
                 // position += new Vector3((-sensitivity * rotationSpeed), 0f);
                 // Rect.position = position;
-                Rigidbody.AddRelativeTorque(0f, (-sensitivity * rotationSpeed/3), 0f);
+                Rigidbody.AddRelativeTorque(0f, (-sensitivity * rotationSpeed/4), 0f);
             }
             if (Input.GetKey("d"))
             {
                 // var position = Rect.position;
                 // position += new Vector3((sensitivity * rotationSpeed), 0f);
                 // Rect.position = position;
-                Rigidbody.AddRelativeTorque(0f, (sensitivity * rotationSpeed/3), 0f);
+                Rigidbody.AddRelativeTorque(0f, (sensitivity * rotationSpeed/4), 0f);
             }
 
 
