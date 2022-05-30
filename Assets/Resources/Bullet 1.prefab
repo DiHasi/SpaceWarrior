@@ -32,7 +32,7 @@ Transform:
   m_GameObject: {fileID: 3364367149491400603}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 295.28107, y: 0.0000038146973, z: 852.722}
-  m_LocalScale: {x: 9, y: 9, z: 9}
+  m_LocalScale: {x: 24.97041, y: 24.97041, z: 24.97041}
   m_Children:
   - {fileID: 3444901766310482569}
   - {fileID: 4942490579568347224}
@@ -71,7 +71,7 @@ MonoBehaviour:
   capsule: {fileID: 3444901766310482569}
   sender: 
   dmg: 10
-  BulletSpeed: 80000
+  BulletSpeed: 100000
 --- !u!96 &1319301835350826773
 TrailRenderer:
   serializedVersion: 2

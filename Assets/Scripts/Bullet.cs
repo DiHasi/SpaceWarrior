@@ -25,7 +25,7 @@ public class Bullet : MonoBehaviourPunCallbacks
 
     private void Awake()
     {
-        bullet.maxDepenetrationVelocity = 100000f;
+        bullet.maxDepenetrationVelocity = 500000f;
     }
 
     // Update is called once per frame
@@ -47,8 +47,16 @@ public class Bullet : MonoBehaviourPunCallbacks
         
         if (!other.isTrigger && !other.CompareTag("Object"))
         {
-            var a = other.transform.parent.gameObject;
-            Debug.Log(a.tag);
+            if (photonView.IsMine)
+            {
+                GameObject a = other.gameObject;
+                if (!other.CompareTag("Sphere"))
+                {
+                    a = other.transform.parent.gameObject;
+                }
+                a.GetComponent<PhotonView>().RPC("TakeDamage", RpcTarget.All, dmg, "test");
+            }
+            
             // ExitGames.Client.Photon.Hashtable h = new ExitGames.Client.Photon.Hashtable();
             // var rec = PhotonNetwork.PlayerList.ToList().Find(x => x.ActorNumber 
             //                                                       == other.GetComponent<PhotonView>().Owner.ActorNumber);
@@ -63,7 +71,7 @@ public class Bullet : MonoBehaviourPunCallbacks
             //                                                       == photonView.Owner.UserId);
             // Debug.Log( other.GetComponent<PhotonView>().ViewID);
             // photonView.RPC("TakeDamage", RpcTarget.All, dmg, "test");
-            a.GetComponent<PhotonView>().RPC("TakeDamage", RpcTarget.All, dmg, "test");
+            
         }
     }
 

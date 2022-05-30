@@ -35,7 +35,6 @@ public class PhotonManager : MonoBehaviourPunCallbacks
         ExitGames.Client.Photon.Hashtable h = new ExitGames.Client.Photon.Hashtable();
         h.Add("K", 0);
         h.Add("D", 0);
-        h.Add("hp", 1);
         h.Add("Team", 0);
         h.Add("Sender", "");
         PhotonNetwork.LocalPlayer.SetCustomProperties(h);

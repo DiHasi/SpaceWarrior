@@ -60,6 +60,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             Canvas.SetActive(false);
             gameObject.layer = 0;
             gameObject.GetComponent<MeshCollider>().isTrigger = false;
+            plane.SetActive(true);
         }
 
         if (photonView.IsMine)
@@ -71,10 +72,9 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     
     public void Update()
     {
-        photonView.Owner.CustomProperties.ToList().ForEach(p => Debug.Log("55" + p));
+        // photonView.Owner.CustomProperties.ToList().ForEach(p => Debug.Log("55" + p));
         if (photonView.IsMine)
         {
-            
             // Debug.Log(661 + " start " + (int)photonView.Owner.CustomProperties["hp"]);
             var rec = PhotonNetwork.PlayerList.ToList().Find(x => x.UserId
                                                                   == photonView.Owner.UserId);
@@ -136,9 +136,10 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 dead = true;
             }
         }
+        
         plane.GetComponent<Renderer>().material.color = Color.cyan;
-        if (Camera == null)
-            Camera = FindObjectOfType<Camera>();
+        // if (Camera == null)
+        Camera = FindObjectOfType<Camera>();
         if (Camera != null)
         {
             plane.transform.LookAt(Camera.transform);

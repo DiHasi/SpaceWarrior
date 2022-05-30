@@ -102,7 +102,7 @@ public class PlayerLocal : MonoBehaviourPunCallbacks
                 // var position = Rect.position;
                 // position += new Vector3((sensitivity * rotationSpeed), 0f);
                 // Rect.position = position;
-                Rigidbody.AddRelativeTorque(0f, (sensitivity * rotationSpeed/4), 0f);
+                Rigidbody.AddRelativeTorque(0f, (sensitivity * rotationSpeed/2), 0f);
             }
 
 
