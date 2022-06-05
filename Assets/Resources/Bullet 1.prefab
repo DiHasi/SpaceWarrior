@@ -71,6 +71,7 @@ MonoBehaviour:
   capsule: {fileID: 3444901766310482569}
   sender: 
   dmg: 10
+  team: 0
   BulletSpeed: 100000
 --- !u!96 &1319301835350826773
 TrailRenderer:

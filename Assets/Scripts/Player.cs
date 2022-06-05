@@ -52,9 +52,10 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     {
         
         // Debug.Log(661 + " awake " + (int)photonView.Owner.CustomProperties["hp"]);
-        photonView.RPC("RPC_GetTeam", RpcTarget.MasterClient);
+        
         if (!photonView.IsMine)
         {
+            
             PlayerLocal.enabled = false;
             Destroy(PlayerLocal.camera.gameObject);
             Canvas.SetActive(false);
@@ -65,6 +66,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
         if (photonView.IsMine)
         {
+            photonView.RPC("RPC_GetTeam", RpcTarget.MasterClient);
             Collider.SetActive(false);
         }
     }
@@ -72,25 +74,26 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     
     public void Update()
     {
-        // photonView.Owner.CustomProperties.ToList().ForEach(p => Debug.Log("55" + p));
         if (photonView.IsMine)
         {
-            // Debug.Log(661 + " start " + (int)photonView.Owner.CustomProperties["hp"]);
-            var rec = PhotonNetwork.PlayerList.ToList().Find(x => x.UserId
-                                                                  == photonView.Owner.UserId);
-            if (rec.CustomProperties["Team"] != null && !flag)
+            // var rec = PhotonNetwork.PlayerList.ToList().Find(x => x.UserId
+            //                                                       == photonView.Owner.UserId);
+            if (!flag && myTeam != 0)
             {
-                if ((int) rec.CustomProperties["Team"] == 1)
+                ExitGames.Client.Photon.Hashtable h = new ExitGames.Client.Photon.Hashtable();
+                h.Add("Team", myTeam);
+                photonView.Owner.SetCustomProperties(h);
+                if (myTeam == 1)
                 {
                     photonView.transform.position = new Vector3(0, 0, -4000);
                 }
-                else
+                else if (myTeam == 2)
                 {
                     photonView.transform.position = new Vector3(0, 0, 4000);
                     photonView.transform.rotation = Quaternion.Euler(0, 180, 0);
                 }
                 
-                photonView.RPC("RPC_GetTeam", RpcTarget.MasterClient);
+                
                 // Debug.LogError(photonView.Owner.ActorNumber + " - " + 2 + " " + GameObject.Find("GameManager").GetComponent<GameManagerTeamFight>().nextTeam);
                 flag = true;
             }
@@ -111,7 +114,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         }
         if (photonView.IsMine)
         {
-            hpCount.text = $"hp: {playerHp} team: {photonView.Owner.CustomProperties["Team"]}";
+            hpCount.text = $"hp: {playerHp} team: {myTeam}";
             name.text = $"name: {photonView.ViewID}";
             // if (photonView.Owner.CustomProperties["hp"] != null)
             // {
@@ -208,16 +211,16 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     [PunRPC]
     public void RPC_GetTeam()
     {
-        // myTeam = GameObject.Find("GameManager").GetComponent<GameManagerTeamFight>().nextTeam;
-        // myTeam = GameManagerTeamFight.GS.nextTeam;
-        // GameManagerTeamFight.GS.UpdateTeam();
-        // photonView.RPC("RPC_SentTeam", RpcTarget.OthersBuffered, myTeam);
-        
-        GameObject.Find("GameManager").GetComponent<GameManagerTeamFight>().UpdateTeam();
+        var GM = GameObject.Find("GameManager").GetComponent<GameManagerTeamFight>();
+        myTeam = GM.nextTeam;
+        GM.UpdateTeam();
+        photonView.RPC("RPC_SentTeam", RpcTarget.OthersBuffered, myTeam);
+}
+
+    [PunRPC]
+    public void RPC_SentTeam(int whichTeam)
+    {
+        myTeam = whichTeam;
     }
-    // [PunRPC]
-    // void RPC_SentTeam(int whichTeam)
-    // {
-    //     myTeam = whichTeam;
-    // }
+    
 }

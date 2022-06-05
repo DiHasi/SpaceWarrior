@@ -13,6 +13,7 @@ public class Bullet : MonoBehaviourPunCallbacks
     public string sender;
     public int dmg;
     private float lifeTime;
+    public int team;
 
     public float BulletSpeed;
     
@@ -54,31 +55,20 @@ public class Bullet : MonoBehaviourPunCallbacks
                 {
                     a = other.transform.parent.gameObject;
                 }
-                a.GetComponent<PhotonView>().RPC("TakeDamage", RpcTarget.All, dmg, "test");
+
+                if ((int) a.GetComponent<PhotonView>().Owner.CustomProperties["Team"] != team)
+                {
+                    a.GetComponent<PhotonView>().RPC("TakeDamage", RpcTarget.All, dmg, "test");
+                }
             }
-            
-            // ExitGames.Client.Photon.Hashtable h = new ExitGames.Client.Photon.Hashtable();
-            // var rec = PhotonNetwork.PlayerList.ToList().Find(x => x.ActorNumber 
-            //                                                       == other.GetComponent<PhotonView>().Owner.ActorNumber);
-            //
-            // if (photonView.IsMine)
-            // {
-            //     h.Add("hp", (int)rec.CustomProperties["hp"] - dmg);
-            // }
-            // // other.GetComponent<Renderer>().material.color = Color.red;
-            // other.GetComponent<PhotonView>().Owner.SetCustomProperties(h);
-            // var plr = PhotonNetwork.PlayerList.ToList().Find(x => x.UserId
-            //                                                       == photonView.Owner.UserId);
-            // Debug.Log( other.GetComponent<PhotonView>().ViewID);
-            // photonView.RPC("TakeDamage", RpcTarget.All, dmg, "test");
-            
         }
     }
 
     [PunRPC]
-    public void Set(string sn)
+    public void Set(string sn, int team)
     {
         sender = sn;
+        this.team = team;
     }
     
     [PunRPC]

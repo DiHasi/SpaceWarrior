@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Photon.Pun;
+using Photon.Realtime;
 using UnityEngine;
 
 public class GameManagerTeamFight : MonoBehaviourPunCallbacks
@@ -15,7 +16,7 @@ public class GameManagerTeamFight : MonoBehaviourPunCallbacks
 
     public Player body;
 
-    public int nextTeam = 2;
+    public int nextTeam;
     public bool isStart = false;
     public float speedRot;
     // Start is called before the first frame update
@@ -31,25 +32,20 @@ public class GameManagerTeamFight : MonoBehaviourPunCallbacks
         var body3 = Avatar.transform.Find("Body3");
         Canvas.enabled = true;
         Camera.enabled = true;
-
-        ExitGames.Client.Photon.Hashtable h = new ExitGames.Client.Photon.Hashtable();
-        h.Add("Team", nextTeam);
-        body3.GetComponent<PhotonView>().Owner.SetCustomProperties(h);
-            
-
+        
         body3.GetComponent<Renderer>().enabled = false;
         body3.GetComponent<PlayerLocal>().enabled = false;
         body3.GetComponent<PlayerLocal>().camera.SetActive(false);
         body3.GetComponent<Player>().Canvas.SetActive(false);
     }
-
+    
     public void UpdateTeam()
     {
         if (nextTeam == 1)
         {
             nextTeam = 2;
         }
-        else
+        else if(nextTeam == 2)
         {
             nextTeam = 1;
         }
@@ -68,4 +64,5 @@ public class GameManagerTeamFight : MonoBehaviourPunCallbacks
             isStart = true;
         }
     }
+    
 }

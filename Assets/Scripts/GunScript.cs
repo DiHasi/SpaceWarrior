@@ -41,26 +41,24 @@ public class GunScript : MonoBehaviourPunCallbacks
                 foreach (var gun in guns)
                 {
                     var b1 = PhotonNetwork.Instantiate(prefab.name, gun.transform.position, gun.transform.rotation);
-                    // b1.GetPhotonView().RPC("Set", RpcTarget.All, photonView.Owner.ActorNumber.ToString());
-                    // ExitGames.Client.Photon.Hashtable h = new ExitGames.Client.Photon.Hashtable();
-                    // h.Add("Sender", photonView.Owner.ActorNumber.ToString());
-                    // b1.GetComponent<PhotonView>().Owner.SetCustomProperties(h);
+                    b1.GetComponent<PhotonView>().RPC("Set", RpcTarget.All, photonView.Owner.UserId, 
+                        photonView.Owner.CustomProperties["Team"]);
                     _time = 0f;
                 }
 
             }
-            if (Input.GetKey(KeyCode.Mouse1) && _time > cooldown)
-            {
-                GameObject prefab = bullet;
-                prefab.GetComponent<TrailRenderer>().time = trailRenderTime * 5;
-
-                    var b1 = PhotonNetwork.Instantiate(prefab.name, guns[0].transform.position, guns[0].transform.rotation);
-                    // b1.GetPhotonView().RPC("Set", RpcTarget.All, photonView.Owner.ActorNumber.ToString());
-                    // ExitGames.Client.Photon.Hashtable h = new ExitGames.Client.Photon.Hashtable();
-                    // h.Add("Sender", photonView.Owner.ActorNumber.ToString());
-                    // b1.GetComponent<PhotonView>().Owner.SetCustomProperties(h);
-                    _time = -5f;
-            }
+            // if (Input.GetKey(KeyCode.Mouse1) && _time > cooldown)
+            // {
+            //     GameObject prefab = bullet;
+            //     prefab.GetComponent<TrailRenderer>().time = trailRenderTime * 5;
+            //
+            //         var b1 = PhotonNetwork.Instantiate(prefab.name, guns[0].transform.position, guns[0].transform.rotation);
+            //         // b1.GetPhotonView().RPC("Set", RpcTarget.All, photonView.Owner.ActorNumber.ToString());
+            //         // ExitGames.Client.Photon.Hashtable h = new ExitGames.Client.Photon.Hashtable();
+            //         // h.Add("Sender", photonView.Owner.ActorNumber.ToString());
+            //         // b1.GetComponent<PhotonView>().Owner.SetCustomProperties(h);
+            //         _time = -5f;
+            // }
             
             _time += Time.deltaTime;
         }
