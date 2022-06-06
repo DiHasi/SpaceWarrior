@@ -1694,6 +1694,7 @@ MonoBehaviour:
   lastDamagePlayer: 
   myTeam: 0
   Avatar: {fileID: 0}
+  isDead: 0
   Collider: {fileID: 1375176896701146362}
 --- !u!114 &1943315658053373771
 MonoBehaviour:

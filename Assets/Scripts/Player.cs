@@ -35,6 +35,8 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     public int myTeam;
     public GameObject Avatar;
 
+    public bool isDead = false;
+
 
     public GameObject Collider;
 
@@ -50,9 +52,13 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     
     private void Awake()
     {
-        
-        // Debug.Log(661 + " awake " + (int)photonView.Owner.CustomProperties["hp"]);
-        
+        // float a = 1f;
+        // while (a > 0)
+        // {
+        //     a = Mathf.Lerp(a, 0, 0.5f);
+        //     Debug.Log(a);
+        //     // photonView.RPC(nameof(RPC_ChangeColor), RpcTarget.Others, 0f, 0f, 0f, a);
+        // }
         if (!photonView.IsMine)
         {
             
@@ -76,6 +82,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     {
         if (photonView.IsMine)
         {
+            // Debug.LogError(lastDamagePlayer);
             // var rec = PhotonNetwork.PlayerList.ToList().Find(x => x.UserId
             //                                                       == photonView.Owner.UserId);
             if (!flag && myTeam != 0)
@@ -114,8 +121,19 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         }
         if (photonView.IsMine)
         {
+            if (isDead)
+            {
+                gameObject.GetComponent<Renderer>().material.color = Color.black;
+                gameObject.GetComponent<PlayerLocal>().enabled = false;
+                gameObject.GetComponent<RayScript>().enabled = false;
+                gameObject.GetComponent<PlayerLocal>().force = 0;
+                photonView.RPC(nameof(RPC_ChangeColor), RpcTarget.All, 1.0f, 0.0f, 0.0f, 1f);
+            }
+            
+            
+            
             hpCount.text = $"hp: {playerHp} team: {myTeam}";
-            name.text = $"name: {photonView.ViewID}";
+            name.text = $"name: {photonView.Owner.UserId}";
             // if (photonView.Owner.CustomProperties["hp"] != null)
             // {
             //     playerHp = (int)photonView.Owner.CustomProperties["hp"];
@@ -125,11 +143,11 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 k = (int)photonView.Owner.CustomProperties["K"];
                 d = (int)photonView.Owner.CustomProperties["D"];
             }
-            if (playerHp <= 0)
+            if (playerHp <= 0 && !isDead)
             {
-                PlayerLocal.GetComponent<Renderer>().material.color = Color.red;
-                // Dead();
-                playerHp = 499;
+                playerHp = 0;
+                Dead();
+                isDead = true;
             }
         }
         else
@@ -141,7 +159,6 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         }
         
         plane.GetComponent<Renderer>().material.color = Color.cyan;
-        // if (Camera == null)
         Camera = FindObjectOfType<Camera>();
         if (Camera != null)
         {
@@ -152,27 +169,87 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     {
         if (photonView.IsMine)
         {
-            if (dead == false)
+            if (lastDamagePlayer != "")
             {
-                if (lastDamagePlayer != "" && lastDamagePlayer != photonView.Owner.NickName)
+                var ldp = PhotonNetwork.PlayerList.ToList().Find(x => x.NickName == lastDamagePlayer);
+                if (ldp != null)
                 {
-                    var ldp = PhotonNetwork.PlayerList.ToList().Find(x => x.NickName == lastDamagePlayer);
-                    if (ldp != null)
-                    {
-                        ExitGames.Client.Photon.Hashtable h = new ExitGames.Client.Photon.Hashtable();
-                        h.Add("K", ((int)ldp.CustomProperties["K"]) + 1);
-                        h.Add("D", (int)ldp.CustomProperties["D"]);
-                        ldp.SetCustomProperties(h);
-                    }
+                    ExitGames.Client.Photon.Hashtable h = new ExitGames.Client.Photon.Hashtable();
+                    h.Add("K", ((int)ldp.CustomProperties["K"]) + 1);
+                    h.Add("D", (int)ldp.CustomProperties["D"]);
+                    ldp.SetCustomProperties(h);
                 }
-                d++;
-                SaveKD();
-                PhotonNetwork.Destroy(gameObject);
-                dead = true;
-                // FindObjectOfType<GameManager>().StartCoroutine(FindObjectOfType<GameManager>().Respawn());
             }
+            d++;
+            SaveKD();
+
+            StartCoroutine(Respawn());
         }
+
+        
     }
+    
+    public IEnumerator Respawn()
+    {
+        if (photonView.IsMine)
+        {
+            playerHp = 0;
+        }
+
+        yield return new WaitForSeconds(5);
+        photonView.RPC(nameof(RPC_ChangeRender), RpcTarget.All, false);
+        if (photonView.IsMine)
+        {
+            if (myTeam == 1)
+            {
+                photonView.transform.position = new Vector3(0, 0, -4000);
+            }
+            else if (myTeam == 2)
+            {
+                photonView.transform.position = new Vector3(0, 0, 4000);
+                photonView.transform.rotation = Quaternion.Euler(0, 180, 0);
+            }
+        
+            
+            // gameObject.GetComponent<Renderer>().enabled = false;
+        }
+        
+        
+        yield return new WaitForSeconds(1);
+        if (photonView.IsMine)
+        {
+            playerHp = 500;
+            gameObject.GetComponent<Renderer>().enabled = true;
+            gameObject.GetComponent<PlayerLocal>().enabled = true;
+            gameObject.GetComponent<PlayerLocal>().force = 10000;
+            isDead = false;
+            photonView.RPC(nameof(RPC_ChangeRender), RpcTarget.All, true);
+            photonView.RPC(nameof(RPC_ChangeColor), RpcTarget.All, 1f, 0.9215686f, 0.01568628f, 1f);
+            gameObject.GetComponent<RayScript>().enabled = true;
+        }
+        
+        
+        yield return null;
+    }
+
+    // public IEnumerator FadeOpacity()
+    // {
+    //     float a = 1f;
+    //     while (a > 0)
+    //     {
+    //         Material mat = GetComponent<Renderer>().material;
+    //         
+    //         a = Mathf.Lerp(a, 0, 0.5f);
+    //         var matColor = mat.color;
+    //         matColor.a = a;
+    //         if (photonView.IsMine)
+    //         {
+    //             photonView.RPC(nameof(RPC_ChangeColor), RpcTarget.Others, 1f, 0f, 0f, a);
+    //         }
+    //         
+    //         yield return new WaitForSeconds(0.5f);
+    //     }
+    // }
     public void SaveKD()
     {
         ExitGames.Client.Photon.Hashtable h = new ExitGames.Client.Photon.Hashtable();
@@ -187,8 +264,11 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             return;
         if (photonView.IsMine)
         {
-            lastDamagePlayer = actorName;
-            playerHp -= dmg;
+            if (!isDead)
+            {
+                lastDamagePlayer = actorName;
+                playerHp -= dmg;
+            }
         }
         
     } 
@@ -222,5 +302,15 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     {
         myTeam = whichTeam;
     }
-    
+
+    [PunRPC]
+    public void RPC_ChangeColor(float r, float g, float b, float a = 1f)
+    {
+        gameObject.GetComponent<Renderer>().material.color = new Color(r, g, b, a);
+    }
+    [PunRPC]
+    public void RPC_ChangeRender(bool b)
+    {
+        gameObject.GetComponent<Renderer>().enabled = b;
+    }
 }

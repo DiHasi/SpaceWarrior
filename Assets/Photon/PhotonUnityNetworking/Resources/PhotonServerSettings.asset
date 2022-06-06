@@ -45,6 +45,9 @@ MonoBehaviour:
   - RPC_GetTeam
   - RPC_SentTeam
   - UpdateTeam
+  - ChangeColor
+  - RPC_ChangeColor
+  - RPC_ChangeRender
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

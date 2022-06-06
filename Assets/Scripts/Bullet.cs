@@ -58,7 +58,8 @@ public class Bullet : MonoBehaviourPunCallbacks
 
                 if ((int) a.GetComponent<PhotonView>().Owner.CustomProperties["Team"] != team)
                 {
-                    a.GetComponent<PhotonView>().RPC("TakeDamage", RpcTarget.All, dmg, "test");
+                    a.GetComponent<PhotonView>().RPC("TakeDamage", RpcTarget.All, dmg, 
+                        photonView.Owner.NickName);
                 }
             }
         }
