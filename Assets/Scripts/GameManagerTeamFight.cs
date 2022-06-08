@@ -22,8 +22,7 @@ public class GameManagerTeamFight : MonoBehaviourPunCallbacks
     // Start is called before the first frame update
     void Start()
     {
-        
-        
+        PhotonNetwork.CurrentRoom.PlayerTtl = 0;
     }
 
     private void Awake()

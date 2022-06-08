@@ -2,6 +2,7 @@ using Photon.Pun;
 using Photon.Realtime;
 using TMPro;
 using WebSocketSharp;
+using UnityEngine;
 
 public class PhotonManager : MonoBehaviourPunCallbacks
 {
@@ -29,8 +30,11 @@ public class PhotonManager : MonoBehaviourPunCallbacks
 
     public void RandomRoom()
     {
-        
         PhotonNetwork.JoinRandomOrCreateRoom();
+    }
+    public void ExitToWindow()
+    {
+        Application.Quit();
     }
 
     public override void OnJoinedRoom()

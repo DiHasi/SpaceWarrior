@@ -62,7 +62,6 @@ public class PlayerLocal : MonoBehaviourPunCallbacks
             {
                 SwitchPauseMenu();
             }
-            
             Mover2();
         }
     }

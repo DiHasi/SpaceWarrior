@@ -11,7 +11,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
 
-public class TabControl : MonoBehaviourPunCallbacks
+public class TabControl : MonoBehaviourPunCallbacks, ILobbyCallbacks
 {
     public GameObject TabCanvas;
 
@@ -20,6 +20,7 @@ public class TabControl : MonoBehaviourPunCallbacks
     public GameObject Parent;
 
 
+    public bool CanOutputTab = false;
     // Start is called before the first frame update
     void Start()
     {
@@ -28,7 +29,7 @@ public class TabControl : MonoBehaviourPunCallbacks
         TabCanvas.GetComponent<Canvas>().enabled = false;
     }
 
-    void TabOutput()
+    public void TabOutput()
     {
 
         for (int i = 0; i < Parent.transform.childCount; i++) {
@@ -50,7 +51,7 @@ public class TabControl : MonoBehaviourPunCallbacks
             int i = playersTeam1.IndexOf(player);
             g = Instantiate(PT1, Parent.transform);
             g.SetActive(true);
-            g.transform.position = PT1.transform.position + new Vector3(0, (445-60 * i - (i)), 0);
+            g.transform.position = PT1.transform.position + new Vector3(0, (330-60 * i - (i)), 0);
             g.transform.Find("Name").GetComponent<TextMeshProUGUI>().text = player.NickName;
             g.transform.Find("Kills").GetComponent<TextMeshProUGUI>().text = player.CustomProperties["K"].ToString();
             g.transform.Find("Deaths").GetComponent<TextMeshProUGUI>().text = player.CustomProperties["D"].ToString();
@@ -61,7 +62,7 @@ public class TabControl : MonoBehaviourPunCallbacks
             int i = playersTeam2.IndexOf(player);
             g = Instantiate(PT2, Parent.transform);
             g.SetActive(true);
-            g.transform.position = PT2.transform.position + new Vector3(0, (445-60 * i - (i)), 0);
+            g.transform.position = PT2.transform.position + new Vector3(0, (330-60 * i - (i)), 0);
             g.transform.Find("Name").GetComponent<TextMeshProUGUI>().text = player.NickName;
             g.transform.Find("Kills").GetComponent<TextMeshProUGUI>().text = player.CustomProperties["K"].ToString();
             g.transform.Find("Deaths").GetComponent<TextMeshProUGUI>().text = player.CustomProperties["D"].ToString();
@@ -71,6 +72,15 @@ public class TabControl : MonoBehaviourPunCallbacks
     // Update is called once per frame
     void Update()
     {
+        // try
+        // {
+        //     TabOutput();
+        // }
+        // catch (Exception e)
+        // {
+        //     Debug.Log(1);
+        //     throw;
+        // }
         if (Input.GetKey(KeyCode.Tab))
         {
             TabCanvas.GetComponent<Canvas>().enabled = true;
@@ -81,13 +91,33 @@ public class TabControl : MonoBehaviourPunCallbacks
         }
     }
 
-    public override void OnLobbyStatisticsUpdate(List<TypedLobbyInfo> lobbyStatistics)
-    {
-        TabOutput();
-    }
+    
+    // public override void OnLobbyStatisticsUpdate(List<TypedLobbyInfo> lobbyStatistics)
+    // {
+    //     foreach (var lobbyStatistic in lobbyStatistics)
+    //     {
+    //         Debug.Log(lobbyStatistic);
+    //     }
+    //
+    //     Debug.Log("stat");
+    //     TabOutput();
+    // }
 
     public override void OnPlayerPropertiesUpdate(Photon.Realtime.Player targetPlayer, Hashtable changedProps)
     {
+        CanOutputTab = true;
         TabOutput();
+        Debug.Log("prop");
+    }
+    
+    public override void OnRoomListUpdate(List<RoomInfo> roomList)
+    {
+        Debug.Log("room");
+        TabOutput();
+    }
+
+    public override void OnJoinedLobby()
+    {
+        throw new NotImplementedException();
     }
 }

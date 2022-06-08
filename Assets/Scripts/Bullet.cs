@@ -38,7 +38,7 @@ public class Bullet : MonoBehaviourPunCallbacks
             if (lifeTime > 9f)
             {
                 // Debug.Log($"{lifeTime} {photonView.Owner.ActorNumber}");
-                PhotonNetwork.Destroy(gameObject);
+                StartCoroutine(Del());
                 lifeTime = 0f;
             }
         }
@@ -65,6 +65,12 @@ public class Bullet : MonoBehaviourPunCallbacks
         }
     }
 
+    public IEnumerator Del()
+    {
+        PhotonNetwork.Destroy(gameObject);
+        yield return null;
+    }
+    
     [PunRPC]
     public void Set(string sn, int team)
     {

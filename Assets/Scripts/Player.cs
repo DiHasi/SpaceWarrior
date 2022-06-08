@@ -2,27 +2,33 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using ExitGames.Client.Photon;
 using Photon.Pun;
 using Photon.Pun.Demo.PunBasics;
+using Photon.Realtime;
 using TMPro;
 using UnityEngine;
-using Debug = UnityEngine.Debug;
+using UnityEngine.UI;
+using WebSocketSharp;
+using static System.Random;
+using Random = UnityEngine.Random;
 
 public class Player : MonoBehaviourPunCallbacks, IPunObservable
 {
     public int playerHp;
     public int k, d;
     public GameObject player;
-
-    public int Team;
+    
     float hpadd = 0;
-    bool dead = false;
+    // bool dead = false;
 
     public PlayerLocal PlayerLocal;
     public GameObject Canvas;
+
+    public GameObject TookDamageCanvas;
+    public GameObject DiedCanvas;
+
+    public CrosshairManager CrosshairManager;
 
     public TMP_Text hpCount;
     public TMP_Text name;
@@ -40,28 +46,21 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
     public GameObject Collider;
 
+    public Image HealthLine;
+    
+    public Image ForceLine;
+
 
     private bool flag = false;
     void Start()
     {
-        // if (photonView.IsMine)
-        // {
-        //     // photonView.RPC("RPC_GetTeam", RpcTarget.MasterClient);
-        // }
+        
     }
     
     private void Awake()
     {
-        // float a = 1f;
-        // while (a > 0)
-        // {
-        //     a = Mathf.Lerp(a, 0, 0.5f);
-        //     Debug.Log(a);
-        //     // photonView.RPC(nameof(RPC_ChangeColor), RpcTarget.Others, 0f, 0f, 0f, a);
-        // }
         if (!photonView.IsMine)
         {
-            
             PlayerLocal.enabled = false;
             Destroy(PlayerLocal.camera.gameObject);
             Canvas.SetActive(false);
@@ -82,9 +81,8 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     {
         if (photonView.IsMine)
         {
-            // Debug.LogError(lastDamagePlayer);
-            // var rec = PhotonNetwork.PlayerList.ToList().Find(x => x.UserId
-            //                                                       == photonView.Owner.UserId);
+
+            // Debug.Log(PhotonNetwork.PlayerList.Length);
             if (!flag && myTeam != 0)
             {
                 ExitGames.Client.Photon.Hashtable h = new ExitGames.Client.Photon.Hashtable();
@@ -99,9 +97,18 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                     photonView.transform.position = new Vector3(0, 0, 4000);
                     photonView.transform.rotation = Quaternion.Euler(0, 180, 0);
                 }
-                
-                
-                // Debug.LogError(photonView.Owner.ActorNumber + " - " + 2 + " " + GameObject.Find("GameManager").GetComponent<GameManagerTeamFight>().nextTeam);
+                //
+                if (photonView.IsMine)
+                {
+                    if (char.ConvertToUtf32(photonView.Owner.NickName, 0) == 8203)
+                    {
+                        photonView.Owner.NickName = "Player_" + Random.Range(0, 1000);
+                    }
+                    while (PhotonNetwork.PlayerList.ToList().All(p => p.NickName != photonView.Owner.NickName))
+                    {
+                        photonView.Owner.NickName = photonView.Owner.NickName +"_"+ Random.Range(0, 100);
+                    }
+                }
                 flag = true;
             }
 
@@ -119,6 +126,16 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         {
             playerHp = 500;
         }
+
+        if (photonView.IsMine)
+        {
+            var gm1 = GameObject.Find("GameManager");
+            var gm2 = gm1.GetComponent<TabControl>();
+            if (gm2.CanOutputTab)
+            {
+                gm2.GetComponent<TabControl>().TabOutput();
+            }
+        }
         if (photonView.IsMine)
         {
             if (isDead)
@@ -127,17 +144,15 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 gameObject.GetComponent<PlayerLocal>().enabled = false;
                 gameObject.GetComponent<RayScript>().enabled = false;
                 gameObject.GetComponent<PlayerLocal>().force = 0;
+                CrosshairManager.enabled = false;
                 photonView.RPC(nameof(RPC_ChangeColor), RpcTarget.All, 1.0f, 0.0f, 0.0f, 1f);
             }
             
+            hpCount.text = $"hp: {playerHp}\nteam: {myTeam}";
+            name.text = $"name: {photonView.Owner.NickName}";
+
+            ForceLine.fillAmount = gameObject.GetComponent<PlayerLocal>().force / (gameObject.GetComponent<PlayerLocal>().maxForce);
             
-            
-            hpCount.text = $"hp: {playerHp} team: {myTeam}";
-            name.text = $"name: {photonView.Owner.UserId}";
-            // if (photonView.Owner.CustomProperties["hp"] != null)
-            // {
-            //     playerHp = (int)photonView.Owner.CustomProperties["hp"];
-            // }
             if (photonView.Owner.CustomProperties["K"] != null)
             {
                 k = (int)photonView.Owner.CustomProperties["K"];
@@ -150,14 +165,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 isDead = true;
             }
         }
-        else
-        {
-            if (playerHp <= 0)
-            {
-                dead = true;
-            }
-        }
-        
+
         plane.GetComponent<Renderer>().material.color = Color.cyan;
         Camera = FindObjectOfType<Camera>();
         if (Camera != null)
@@ -196,7 +204,8 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             playerHp = 0;
         }
 
-        yield return new WaitForSeconds(5);
+        DiedCanvas.SetActive(true);
+        yield return new WaitForSeconds(3);
         photonView.RPC(nameof(RPC_ChangeRender), RpcTarget.All, false);
         if (photonView.IsMine)
         {
@@ -209,9 +218,6 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 photonView.transform.position = new Vector3(0, 0, 4000);
                 photonView.transform.rotation = Quaternion.Euler(0, 180, 0);
             }
-        
-            
-            // gameObject.GetComponent<Renderer>().enabled = false;
         }
         
         
@@ -225,7 +231,9 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             isDead = false;
             photonView.RPC(nameof(RPC_ChangeRender), RpcTarget.All, true);
             photonView.RPC(nameof(RPC_ChangeColor), RpcTarget.All, 1f, 0.9215686f, 0.01568628f, 1f);
+            CrosshairManager.enabled = false;
             gameObject.GetComponent<RayScript>().enabled = true;
+            DiedCanvas.SetActive(false);
         }
         
         
@@ -268,10 +276,19 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             {
                 lastDamagePlayer = actorName;
                 playerHp -= dmg;
+                StartCoroutine(TookDamage());
+                HealthLine.fillAmount = playerHp/500f;
+                // Debug.Log(playerHp/500f);
             }
         }
-        
-    } 
+    }
+
+    public IEnumerator TookDamage()
+    {
+        TookDamageCanvas.SetActive(true);
+        yield return new WaitForSeconds(0.6f);
+        TookDamageCanvas.SetActive(false);
+    }
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
         if (stream.IsWriting)
@@ -313,4 +330,10 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     {
         gameObject.GetComponent<Renderer>().enabled = b;
     }
+
+    // public override void OnRoomListUpdate(List<RoomInfo> roomList)
+    // {
+    //     GameObject? gm1 = GameObject.Find("GameManager");
+    //     gm1.GetComponent<TabControl>().TabOutput();
+    // }
 }
