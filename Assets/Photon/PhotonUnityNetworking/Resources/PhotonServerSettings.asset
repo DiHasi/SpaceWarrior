@@ -48,6 +48,8 @@ MonoBehaviour:
   - ChangeColor
   - RPC_ChangeColor
   - RPC_ChangeRender
+  - RPC_GetPosition
+  - RPC_SentPosition
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

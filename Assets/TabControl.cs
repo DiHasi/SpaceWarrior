@@ -107,7 +107,6 @@ public class TabControl : MonoBehaviourPunCallbacks, ILobbyCallbacks
     {
         CanOutputTab = true;
         TabOutput();
-        Debug.Log("prop");
     }
     
     public override void OnRoomListUpdate(List<RoomInfo> roomList)

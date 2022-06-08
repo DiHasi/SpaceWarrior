@@ -2408,23 +2408,23 @@ MonoBehaviour:
   playerHp: 500
   k: 0
   d: 0
-  player: {fileID: 0}
-  PlayerLocal: {fileID: 5953783380690168788}
-  Canvas: {fileID: 5953783379853231032}
-  TookDamageCanvas: {fileID: 1155071044348001038}
-  DiedCanvas: {fileID: 5228526120902703900}
-  CrosshairManager: {fileID: 5953783380795197469}
-  hpCount: {fileID: 1724266945745260537}
-  name: {fileID: 7774966351909554635}
-  Camera: {fileID: 5953783380371057472}
-  plane: {fileID: 4364386817248695441}
   lastDamagePlayer: 
   myTeam: 0
+  player: {fileID: 0}
+  PlayerLocal: {fileID: 5953783380690168788}
+  Camera: {fileID: 5953783380371057472}
+  plane: {fileID: 4364386817248695441}
   Avatar: {fileID: 0}
   isDead: 0
   Collider: {fileID: 1375176896701146362}
   HealthLine: {fileID: 6343106153553178193}
   ForceLine: {fileID: 2259461416669262044}
+  hpCount: {fileID: 1724266945745260537}
+  name: {fileID: 7774966351909554635}
+  Canvas: {fileID: 5953783379853231032}
+  TookDamageCanvas: {fileID: 1155071044348001038}
+  DiedCanvas: {fileID: 5228526120902703900}
+  CrosshairManager: {fileID: 5953783380795197469}
 --- !u!114 &1943315658053373771
 MonoBehaviour:
   m_ObjectHideFlags: 0

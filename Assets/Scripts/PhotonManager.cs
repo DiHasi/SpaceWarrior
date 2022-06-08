@@ -24,7 +24,7 @@ public class PhotonManager : MonoBehaviourPunCallbacks
     public void CreateRoom()
     {
         RoomOptions roomOptions = new RoomOptions();
-        roomOptions.MaxPlayers = 4;
+        roomOptions.MaxPlayers = 8;
         PhotonNetwork.CreateRoom(RoomName.text, roomOptions, TypedLobby.Default);
     }
 

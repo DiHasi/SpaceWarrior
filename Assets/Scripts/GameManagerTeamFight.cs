@@ -19,6 +19,22 @@ public class GameManagerTeamFight : MonoBehaviourPunCallbacks
     public int nextTeam;
     public bool isStart = false;
     public float speedRot;
+    
+    
+    public List<Vector3> spawnPositionsTeam1 = new List<Vector3>()
+    {
+        new Vector3(0, 60, 4000),
+        new Vector3(0, 30, 4000),
+        new Vector3(0, 0, 4000),
+        new Vector3(0, -40, 4000),
+    };
+    public List<Vector3> spawnPositionsTeam2 = new List<Vector3>()
+    {
+        new Vector3(0, 60, -4000),
+        new Vector3(0, 30, -4000),
+        new Vector3(0, 0, -4000),
+        new Vector3(0, -40, -4000),
+    };
     // Start is called before the first frame update
     void Start()
     {
