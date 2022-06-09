@@ -72,7 +72,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     {
         if (photonView.IsMine)
         {
-            Debug.Log(gameObject.transform.position);
+            // Debug.Log(gameObject.transform.position);
             if (!flag && myTeam != 0)
             {
                 ExitGames.Client.Photon.Hashtable h = new ExitGames.Client.Photon.Hashtable();
@@ -80,12 +80,12 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 photonView.Owner.SetCustomProperties(h);
                 if (myTeam == 1)
                 {
-                    spawnPosition = new Vector3(0, Random.Range(100, 100), -4000);
+                    spawnPosition = new Vector3(0, Random.Range(120, 120), -4000);
                     photonView.transform.position = spawnPosition;
                 }
                 else if (myTeam == 2)
                 {
-                    spawnPosition = new Vector3(0, Random.Range(100, 100), 4000);
+                    spawnPosition = new Vector3(0, Random.Range(-120, 120), 4000);
                     photonView.transform.position = spawnPosition;
                     photonView.transform.rotation = Quaternion.Euler(0, 180, 0);
                 }
@@ -130,6 +130,14 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             if (gm2.CanOutputTab && PhotonNetwork.PlayerList.ToList().All(p => p.CustomProperties["Team"] != null))
             {
                 gm2.GetComponent<TabControl>().TabOutput();
+            }
+            var gm3 = GameObject.Find("Tab").transform.Find("Parent");
+            foreach (var child in gm3.GetComponentsInChildren<Outline>())
+            {
+                if (child.gameObject.transform.Find("Name").GetComponent<TextMeshProUGUI>().text == photonView.Owner.NickName)
+                {
+                    child.gameObject.GetComponent<Outline>().enabled = true;
+                }
             }
         }
         if (photonView.IsMine)
@@ -180,12 +188,12 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 {
                     ExitGames.Client.Photon.Hashtable h = new ExitGames.Client.Photon.Hashtable();
                     h.Add("K", ((int)ldp.CustomProperties["K"]) + 1);
-                    h.Add("D", (int)ldp.CustomProperties["D"]);
+                    // h.Add("D", (int)ldp.CustomProperties["D"]);
                     ldp.SetCustomProperties(h);
                 }
             }
             d++;
-            SaveKD();
+            SaveD();
 
             StartCoroutine(Respawn());
         }
@@ -221,6 +229,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         if (photonView.IsMine)
         {
             playerHp = 500;
+            HealthLine.fillAmount = playerHp/500f;
             gameObject.GetComponent<Renderer>().enabled = true;
             gameObject.GetComponent<PlayerLocal>().enabled = true;
             gameObject.GetComponent<PlayerLocal>().force = 10000;
@@ -237,10 +246,10 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         yield return null;
     }
     
-    public void SaveKD()
+    public void SaveD()
     {
         ExitGames.Client.Photon.Hashtable h = new ExitGames.Client.Photon.Hashtable();
-        h.Add("K", k);
+        // h.Add("K", k);
         h.Add("D", d);
         photonView.Owner.SetCustomProperties(h);
     }
@@ -336,7 +345,6 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     [PunRPC]
     public void RPC_ChangeColor(float r, float g, float b, float a = 1f)
     {
-        Debug.Log("col2");
         gameObject.GetComponent<Renderer>().material.color = new Color(r, g, b, a);
     }
     [PunRPC]

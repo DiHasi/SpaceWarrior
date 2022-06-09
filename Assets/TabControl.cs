@@ -52,6 +52,10 @@ public class TabControl : MonoBehaviourPunCallbacks, ILobbyCallbacks
             g = Instantiate(PT1, Parent.transform);
             g.SetActive(true);
             g.transform.position = PT1.transform.position + new Vector3(0, (330-60 * i - (i)), 0);
+            // if (photonView.IsMine)
+            // {
+            //     g.GetComponent<Outline>().enabled = player.NickName == photonView.Owner.NickName;
+            // }
             g.transform.Find("Name").GetComponent<TextMeshProUGUI>().text = player.NickName;
             g.transform.Find("Kills").GetComponent<TextMeshProUGUI>().text = player.CustomProperties["K"].ToString();
             g.transform.Find("Deaths").GetComponent<TextMeshProUGUI>().text = player.CustomProperties["D"].ToString();
@@ -63,6 +67,10 @@ public class TabControl : MonoBehaviourPunCallbacks, ILobbyCallbacks
             g = Instantiate(PT2, Parent.transform);
             g.SetActive(true);
             g.transform.position = PT2.transform.position + new Vector3(0, (330-60 * i - (i)), 0);
+            // if (photonView.IsMine)
+            // {
+            //     g.GetComponent<Outline>().enabled = player.NickName == photonView.Owner.NickName;
+            // }
             g.transform.Find("Name").GetComponent<TextMeshProUGUI>().text = player.NickName;
             g.transform.Find("Kills").GetComponent<TextMeshProUGUI>().text = player.CustomProperties["K"].ToString();
             g.transform.Find("Deaths").GetComponent<TextMeshProUGUI>().text = player.CustomProperties["D"].ToString();
@@ -106,6 +114,7 @@ public class TabControl : MonoBehaviourPunCallbacks, ILobbyCallbacks
     public override void OnPlayerPropertiesUpdate(Photon.Realtime.Player targetPlayer, Hashtable changedProps)
     {
         CanOutputTab = true;
+        Debug.Log(changedProps);
         TabOutput();
     }
     
