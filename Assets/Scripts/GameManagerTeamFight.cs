@@ -13,6 +13,7 @@ public class GameManagerTeamFight : MonoBehaviourPunCallbacks
     public Camera Camera;
     // private bool isStart = false;
     public Canvas Canvas;
+    public Canvas KillCounterCanvas; 
 
     public Player body;
 
@@ -38,6 +39,7 @@ public class GameManagerTeamFight : MonoBehaviourPunCallbacks
     // Start is called before the first frame update
     void Start()
     {
+        FindObjectsOfType<Player>().ToList().ForEach(p => p.photonView.RPC("Ready", RpcTarget.AllBuffered));
         PhotonNetwork.CurrentRoom.PlayerTtl = 0;
     }
 
@@ -56,6 +58,19 @@ public class GameManagerTeamFight : MonoBehaviourPunCallbacks
     
     public void UpdateTeam()
     {
+        // var p = PhotonNetwork.PlayerList;
+        // if (p.Count(p => (int) p.CustomProperties["Team"] == 1) > p.Count(p => (int) p.CustomProperties["Team"] == 2))
+        // {
+        //     nextTeam = 2;
+        // }
+        // else if(p.Count(p => (int) p.CustomProperties["Team"] == 1) < p.Count(p => (int) p.CustomProperties["Team"] == 2))
+        // { 
+        //     nextTeam = 1;
+        // }
+        // else
+        // {
+        //     nextTeam = 1;
+        // }
         if (nextTeam == 1)
         {
             nextTeam = 2;
@@ -73,12 +88,35 @@ public class GameManagerTeamFight : MonoBehaviourPunCallbacks
             Mathf.Lerp(-120, 120, speedRot), 
             Mathf.Lerp(-100, 100, speedRot)), 
             Mathf.Lerp(0, 360, speedRot));
-        if (PhotonNetwork.PlayerList.Length > 0 && !isStart)
+        
+        if (PhotonNetwork.PlayerList.Length > 1 && !isStart)
         {
-            Canvas.enabled = false;
-            Camera.enabled = false;
-            isStart = true;
+            StartCoroutine(StartCor());
         }
     }
-    
+
+    public IEnumerator StartCor()
+    {
+        yield return new WaitForSeconds(7);
+        if (PhotonNetwork.PlayerList.ToList().All(p => p.CustomProperties["Ready"] != null))
+        {
+            if (PhotonNetwork.PlayerList.ToList().All(p => (bool) p.CustomProperties["Ready"]))
+            {
+                Canvas.enabled = false;
+                Camera.enabled = false;
+                isStart = true;
+                KillCounterCanvas.enabled = true;
+            }
+        }
+        else
+        {
+            yield return null;
+        }
+        
+    }
+
+    // public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    // {
+    //     throw new NotImplementedException();
+    // }
 }

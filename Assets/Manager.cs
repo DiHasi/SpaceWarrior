@@ -9,10 +9,10 @@ public class Manager : MonoBehaviourPunCallbacks
 {
     public void ExitToMenu()
     {
-        StartCoroutine(LeaveAnaLoad());
+        StartCoroutine(LeaveAndLoad());
     }
 
-    public IEnumerator LeaveAnaLoad()
+    public IEnumerator LeaveAndLoad()
     {
         PhotonNetwork.LeaveRoom();
         while (PhotonNetwork.InRoom)
@@ -30,13 +30,13 @@ public class Manager : MonoBehaviourPunCallbacks
     {
         GameObject? gm = GameObject.Find("GameManager");
         gm.GetComponent<TabControl>().TabOutput();
-        Debug.Log(12345678);
+        // Debug.Log(12345678);
     }
 
     public override void OnDisconnected(DisconnectCause cause)
     {
         GameObject? gm = GameObject.Find("GameManager");
         gm.GetComponent<TabControl>().TabOutput();
-        Debug.Log(87654321);
+        // Debug.Log(87654321);
     }
 }

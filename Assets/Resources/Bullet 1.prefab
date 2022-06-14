@@ -68,11 +68,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bullet: {fileID: 729978001896978435}
+  bullet1: {fileID: 0}
   capsule: {fileID: 3444901766310482569}
   sender: 
   dmg: 10
   team: 0
-  BulletSpeed: 100000
+  isStart: 0
+  BulletSpeed: 130000
+  Sparks: {fileID: 1524493020497676700, guid: 6637c5dd88ed2b544989fcaac304b706, type: 3}
 --- !u!96 &1319301835350826773
 TrailRenderer:
   serializedVersion: 2
@@ -81,7 +84,7 @@ TrailRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3364367149491400603}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -359,9 +362,9 @@ CapsuleCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3633618530386200175}
-  m_Material: {fileID: 13400000, guid: 156cbff5da7bd0241a13abea2b0a21e6, type: 2}
+  m_Material: {fileID: 0}
   m_IsTrigger: 1
-  m_Enabled: 1
+  m_Enabled: 0
   m_Radius: 0.5
   m_Height: 2
   m_Direction: 1

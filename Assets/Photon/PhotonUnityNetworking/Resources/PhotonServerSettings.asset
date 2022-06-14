@@ -50,6 +50,17 @@ MonoBehaviour:
   - RPC_ChangeRender
   - RPC_GetPosition
   - RPC_SentPosition
+  - CallTab
+  - RPC_ChangeCondition
+  - KilledOutput
+  - RPC_ShootSound
+  - Finish
+  - RPC_Finish
+  - RPC_ChangeTrailRender1
+  - RPC_ChangeTrailRender2
+  - Ready
+  - RPC_ChangeTrailRender
+  - RPC_Respawn
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

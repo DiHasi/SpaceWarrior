@@ -1,53 +1,106 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Photon.Pun;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class Timer : MonoBehaviourPunCallbacks, IPunObservable
 {
     public float defaultTimerTime;
+    public float startTime = 20;
     public float timer;
 
     public TMP_Text textTime;
 
+    public TMP_Text winner;
+    public Canvas WinnerCanvas;
+    public Canvas KillCounterCanvas;
+    public KillCounter KillCounter;
+
     void Awake()
     {
-        timer = defaultTimerTime;
+        timer = defaultTimerTime + startTime;
     }
+
+    public bool flagA = true;
+    public bool flagB = true;
     private void FixedUpdate()
     {
-        // if (!PhotonNetwork.IsMasterClient)
-        // {
-        //     return;
-        // }
-        timer -= Time.fixedDeltaTime;
+        if (GameObject.Find("GameManager").GetComponent<GameManagerTeamFight>().isStart)
+        {
+            if (timer > 0)
+            {
+                timer -= Time.fixedDeltaTime;
 
-        var t = (int) (timer % 60);
-        var f = t > 10 ? ($"{t}") : ($"0{t}");
-        textTime.text = $"{(int) (timer / 60)}:{f}";
+                if (timer > defaultTimerTime)
+                {
+                    var t = (int) ((timer - defaultTimerTime) % 60);
+                    var f = t >= 10 ? ($"{t}") : ($"0{t}");
+                    textTime.text = $"{(int) ((timer - defaultTimerTime) / 60)}:{f}";
+                    // textTime.color = Color.cyan;
+                }
+                else if (flagB)
+                {
+                    // textTime.color = Color.white;
+                    FindObjectsOfType<Player>().ToList().ForEach(p => p.photonView.RPC("RPC_Respawn", RpcTarget.All));
+                    flagB = false;
+                }
+                else
+                {
+                    var t = (int) (timer % 60);
+                    var f = t >= 10 ? ($"{t}") : ($"0{t}");
+                    textTime.text = $"{(int) (timer / 60)}:{f}";
+                }
+            }
+            else
+            {
+                if (KillCounter.killsCountTeam1 > KillCounter.killsCountTeam2)
+                {
+                    winner.color = new Color(0, 0.9f, 1f);
+                    winner.text = "WINNER\nBLUE";
+                }
+                else if (KillCounter.killsCountTeam1 < KillCounter.killsCountTeam2)
+                {
+                    winner.color = new Color(1, 0.5f, 0f);
+                    winner.text = "WINNER\nORANGE";
+                }
+                else
+                {
+                    winner.text = "DRAW";
+                }
+
+                if (photonView.IsMine)
+                {
+                    if (flagA)
+                    {
+                        // WinnerCanvas.enabled = true;
+                        // KillCounterCanvas.enabled = false;
+                        FindObjectsOfType<Player>().ToList().ForEach(p => p.photonView.RPC("RPC_Finish", RpcTarget.All, winner.text,
+                            winner.color.r, winner.color.g, winner.color.b));
+                        // StartCoroutine(Win());
+                        flagA = !flagA;
+                    }
+                                   
+                }
+            }
+
+        }
     }
 
-    // Start is called before the first frame update
-
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
-        if (stream.IsWriting && PhotonNetwork.IsMasterClient)
+        if (stream.IsWriting)
         {
-            Debug.Log("2114");
+            // Debug.Log("2114");
             stream.SendNext(timer);
         }
         else if (stream.IsReading)
         {
-            Debug.Log("523twgerger");
+            // Debug.Log("523twgerger");
             timer = (float) stream.ReceiveNext();
         }
     }

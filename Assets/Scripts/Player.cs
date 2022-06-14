@@ -8,9 +8,12 @@ using Photon.Pun.Demo.PunBasics;
 using Photon.Realtime;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Audio;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using WebSocketSharp;
 using static System.Random;
+using Hashtable = ExitGames.Client.Photon.Hashtable;
 using Random = UnityEngine.Random;
 
 public class Player : MonoBehaviourPunCallbacks, IPunObservable
@@ -32,6 +35,14 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     public GameObject Avatar;
     public bool isDead = false;
     public GameObject Collider;
+    public GameObject TrailRenderer1;
+    public GameObject TrailRenderer2;
+
+    [Header("Audio")]
+    public AudioClip fireClip;
+    public AudioSource fireSource;
+    public AudioMixer AudioMixer;
+    public AudioClip fightClip;
     
     [Header("UI")]
     public Image HealthLine;
@@ -41,7 +52,11 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     public GameObject Canvas;
     public GameObject TookDamageCanvas;
     public GameObject DiedCanvas;
+    public GameObject KilledCanvas;
     public CrosshairManager CrosshairManager;
+    public TMP_Text winner;
+    public Canvas WinnerCanvas;
+    public Canvas KillCounterCanvas;
     private bool flag = false;
     void Start()
     {
@@ -62,12 +77,24 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
         if (photonView.IsMine)
         {
+            // PlayerLocal.enabled = false;
+            // Canvas.SetActive(false); 
+            
+            
+            // gameObject.GetComponent<PlayerLocal>().force = 0;
+            // PlayerLocal.enabled = false;
+            // gameObject.GetComponent<RayScript>().enabled = false;
+            // CrosshairManager.enabled = false;
+            // Canvas.SetActive(false);
+            //
+            
+            
             photonView.RPC("RPC_GetTeam", RpcTarget.MasterClient);
             Collider.SetActive(false);
         }
     }
-    
-    
+
+    private bool flag1 = false;
     public void Update()
     {
         if (photonView.IsMine)
@@ -82,6 +109,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 {
                     spawnPosition = new Vector3(0, Random.Range(120, 120), -4000);
                     photonView.transform.position = spawnPosition;
+                    photonView.transform.rotation = Quaternion.Euler(0, 0, 0);
                 }
                 else if (myTeam == 2)
                 {
@@ -90,7 +118,17 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                     photonView.transform.rotation = Quaternion.Euler(0, 180, 0);
                 }
 
+                AudioSource audio = gameObject.AddComponent<AudioSource> ();
+                audio.clip = fightClip;
+                audio.playOnAwake = false;
+                audio.outputAudioMixerGroup = AudioMixer.FindMatchingGroups("Master")[2];
 
+                audio.volume = 0.1f;
+                // audioRPC.spatialBlend = 1;
+                // audioRPC.minDistance = 25;
+                // audioRPC.maxDistance = 250;
+                audio.Play();
+                
                 photonView.RPC(nameof(RPC_ChangeColor), RpcTarget.AllBuffered, teamColor[myTeam-1].r,
                 teamColor[myTeam-1].g, teamColor[myTeam-1].b, 1f);
                 
@@ -106,15 +144,30 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                     }
                 }
                 flag = true;
+                // GameObject? gm = GameObject.Find("GameManager");
+                // if (flag && gm.GetComponent<GameManagerTeamFight>().isStart)
+                // {
+                //     gameObject.GetComponent<Renderer>().enabled = true;
+                //     gameObject.GetComponent<PlayerLocal>().enabled = true;
+                //     gameObject.GetComponent<PlayerLocal>().camera.SetActive(true);
+                //     Canvas.SetActive(true);
+                // }
             }
 
             GameObject? gm = GameObject.Find("GameManager");
-            if (flag && gm.GetComponent<GameManagerTeamFight>().isStart)
+            if (flag && gm.GetComponent<GameManagerTeamFight>().isStart && !flag1)
             {
+                
+                // gameObject.GetComponent<Renderer>().enabled = true;
+                // gameObject.GetComponent<PlayerLocal>().enabled = true;
+                // gameObject.GetComponent<PlayerLocal>().camera.SetActive(true);
+                // Canvas.SetActive(true);
+                
                 gameObject.GetComponent<Renderer>().enabled = true;
-                gameObject.GetComponent<PlayerLocal>().enabled = true;
+                gameObject.GetComponent<PlayerLocal>().enabled = false;
                 gameObject.GetComponent<PlayerLocal>().camera.SetActive(true);
-                Canvas.SetActive(true);
+                Canvas.SetActive(false);
+                flag1 = true;
             }
         }
         
@@ -122,24 +175,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         {
             playerHp = 500;
         }
-
-        if (photonView.IsMine)
-        {
-            var gm1 = GameObject.Find("GameManager");
-            var gm2 = gm1.GetComponent<TabControl>();
-            if (gm2.CanOutputTab && PhotonNetwork.PlayerList.ToList().All(p => p.CustomProperties["Team"] != null))
-            {
-                gm2.GetComponent<TabControl>().TabOutput();
-            }
-            var gm3 = GameObject.Find("Tab").transform.Find("Parent");
-            foreach (var child in gm3.GetComponentsInChildren<Outline>())
-            {
-                if (child.gameObject.transform.Find("Name").GetComponent<TextMeshProUGUI>().text == photonView.Owner.NickName)
-                {
-                    child.gameObject.GetComponent<Outline>().enabled = true;
-                }
-            }
-        }
+        
         if (photonView.IsMine)
         {
             if (isDead)
@@ -186,6 +222,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 var ldp = PhotonNetwork.PlayerList.ToList().Find(x => x.NickName == lastDamagePlayer);
                 if (ldp != null)
                 {
+                    photonView.RPC(nameof(KilledOutput), ldp, photonView.Owner.NickName);
                     ExitGames.Client.Photon.Hashtable h = new ExitGames.Client.Photon.Hashtable();
                     h.Add("K", ((int)ldp.CustomProperties["K"]) + 1);
                     // h.Add("D", (int)ldp.CustomProperties["D"]);
@@ -208,6 +245,9 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             playerHp = 0;
         }
 
+        photonView.RPC(nameof(RPC_ChangeTrailRender1), RpcTarget.AllBuffered, false);
+        photonView.RPC(nameof(RPC_ChangeTrailRender2), RpcTarget.AllBuffered, false);
+        
         DiedCanvas.SetActive(true);
         yield return new WaitForSeconds(3);
         photonView.RPC(nameof(RPC_ChangeRender), RpcTarget.All, false);
@@ -216,6 +256,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             if (myTeam == 1)
             {
                 photonView.transform.position = spawnPosition;
+                photonView.transform.rotation = Quaternion.Euler(0, 0, 0);
             }
             else if (myTeam == 2)
             {
@@ -223,7 +264,9 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 photonView.transform.rotation = Quaternion.Euler(0, 180, 0);
             }
         }
-        
+        photonView.RPC(nameof(RPC_ChangeTrailRender1), RpcTarget.AllBuffered, true);
+        photonView.RPC(nameof(RPC_ChangeTrailRender2), RpcTarget.AllBuffered, true);
+
         
         yield return new WaitForSeconds(1);
         if (photonView.IsMine)
@@ -237,7 +280,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             photonView.RPC(nameof(RPC_ChangeRender), RpcTarget.All, true);
             photonView.RPC(nameof(RPC_ChangeColor), RpcTarget.AllBuffered, teamColor[myTeam-1].r,
                 teamColor[myTeam-1].g, teamColor[myTeam-1].b, 1f);
-            CrosshairManager.enabled = false;
+            CrosshairManager.enabled = true;
             gameObject.GetComponent<RayScript>().enabled = true;
             DiedCanvas.SetActive(false);
         }
@@ -252,6 +295,23 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         // h.Add("K", k);
         h.Add("D", d);
         photonView.Owner.SetCustomProperties(h);
+    }
+    [PunRPC]
+    public void RPC_ShootSound()
+    {
+        // Debug.Log("jisfdjgi");
+        // gameObject.GetComponent<AudioSource>().PlayOneShot(fireClip);
+        // fireSource.PlayOneShot(fireClip);
+        AudioSource audioRPC = gameObject.AddComponent<AudioSource> ();
+        audioRPC.clip = fireClip;
+        audioRPC.playOnAwake = false;
+        audioRPC.outputAudioMixerGroup = AudioMixer.FindMatchingGroups("Master")[1];
+
+        audioRPC.volume = 0.1f;
+        audioRPC.spatialBlend = 1;
+        audioRPC.minDistance = 25;
+        audioRPC.maxDistance = 500;
+        audioRPC.PlayOneShot(fireClip);
     }
     [PunRPC]
     public void TakeDamage(int dmg, string actorName)
@@ -308,40 +368,19 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         myTeam = whichTeam;
     }
 
-    
-    // [PunRPC]
-    // public void RPC_GetPosition()
-    // {
-    //     var GM = GameObject.Find("GameManager").GetComponent<GameManagerTeamFight>();
-    //     myTeam = GM.nextTeam;
-    //     GM.UpdateTeam();
-    //     photonView.RPC("RPC_SentTeam", RpcTarget.OthersBuffered, myTeam);
-    // }
-    //
-    // [PunRPC]
-    // public void RPC_SentPosition(int whichPosition)
-    // {
-    //     myTeam = whichPosition;
-    // }
+    [PunRPC]
+    public void KilledOutput(string Name)
+    {
+        KilledCanvas.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = $"You killed {Name}";
+        StartCoroutine(Killed());
+    }
 
-    // [PunRPC]
-    // public void popPosition()
-    // {
-    //     var GM = GameObject.Find("GameManager").GetComponent<GameManagerTeamFight>();
-    //     if (myTeam == 1)
-    //     {
-    //         spawnPosition = GM.spawnPositionsTeam1[0];
-    //         GM.spawnPositionsTeam1.RemoveAt(0);
-    //     }
-    //     
-    //     photonView.RPC("RPC_SentPosition", RpcTarget.OthersBuffered, spawnPosition);
-    // }
-    // [PunRPC]
-    // public void RPC_SentPosition(Vector3 whichPosition)
-    // {
-    //     spawnPosition = whichPosition;
-    // }
-
+    public IEnumerator Killed()
+    {
+        KilledCanvas.SetActive(true);
+        yield return new WaitForSeconds(4);
+        KilledCanvas.SetActive(false);
+    }
     [PunRPC]
     public void RPC_ChangeColor(float r, float g, float b, float a = 1f)
     {
@@ -352,10 +391,103 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     {
         gameObject.GetComponent<Renderer>().enabled = b;
     }
+    
+    [PunRPC]
+    public void RPC_ChangeTrailRender1(bool b)
+    {
+        TrailRenderer1.SetActive(b);
+    }
+    [PunRPC]
+    public void RPC_ChangeTrailRender2(bool b)
+    {
+        TrailRenderer2.SetActive(b);
+    }
 
+    [PunRPC]
+    public void RPC_Finish(string text, float r, float g, float b)
+    {
+        GameObject.Find("WinCanvas").transform.GetChild(1).GetComponent<TMP_Text>().text = text;
+        GameObject.Find("WinCanvas").transform.GetChild(1).GetComponent<TMP_Text>().color = new Color(r, g, b);
+        GameObject.Find("WinCanvas").GetComponent<Canvas>().enabled = true;
+        GameObject.Find("KillCounter").GetComponent<Canvas>().enabled = false;
+    
+        StartCoroutine(Win());
+        gameObject.GetComponent<PlayerLocal>().force = 0;
+        PlayerLocal.enabled = false;
+        gameObject.GetComponent<RayScript>().enabled = false;
+        CrosshairManager.enabled = false;
+        Canvas.SetActive(false);
+    }
+
+    [PunRPC]
+    public void Ready()
+    {
+        ExitGames.Client.Photon.Hashtable h = new ExitGames.Client.Photon.Hashtable();
+        h.Add("Ready", true);
+        photonView.Owner.SetCustomProperties(h);
+    }
+    public IEnumerator Win()
+    {
+        yield return new WaitForSeconds(6);
+        PhotonNetwork.LeaveRoom();
+        while (PhotonNetwork.InRoom)
+        {
+            yield return null;
+        }
+        PhotonNetwork.LoadLevel("Menu");
+    }
     // public override void OnRoomListUpdate(List<RoomInfo> roomList)
     // {
     //     GameObject? gm1 = GameObject.Find("GameManager");
     //     gm1.GetComponent<TabControl>().TabOutput();
     // }
+
+    public void TabOutline()
+    {
+        if (photonView.IsMine)
+        {
+            GameObject.Find("Tab").transform.GetChild(1).GetComponentsInChildren<Outline>().ToList()
+                .ForEach(p => p.enabled = photonView.Owner.NickName ==
+                                             p.gameObject.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text);
+            
+        }
+    }
+    [PunRPC]
+    public void RPC_Respawn()
+    {
+        
+        // photonView.RPC(nameof(RPC_ChangeRender), RpcTarget.All, false);
+        // if (photonView.IsMine)
+        // {
+        //     if (myTeam == 1)
+        //     {
+        //         photonView.transform.position = spawnPosition;
+        //         photonView.transform.rotation = Quaternion.Euler(0, 0, 0);
+        //     }
+        //     else if (myTeam == 2)
+        //     {
+        //         photonView.transform.position = spawnPosition;
+        //         photonView.transform.rotation = Quaternion.Euler(0, 180, 0);
+        //     }
+        // }
+        //
+        //
+        // if (photonView.IsMine)
+        // {
+        //     playerHp = 500;
+        //     photonView.RPC(nameof(RPC_ChangeRender), RpcTarget.All, true);
+        //     photonView.RPC(nameof(RPC_ChangeColor), RpcTarget.AllBuffered, teamColor[myTeam-1].r,
+        //         teamColor[myTeam-1].g, teamColor[myTeam-1].b, 1f);
+        // }
+        // gameObject.GetComponent<PlayerLocal>().force = 0;
+        if (photonView.IsMine)
+        {
+            PlayerLocal.enabled = true;
+            gameObject.GetComponent<RayScript>().enabled = true;
+            CrosshairManager.enabled = true;
+            Canvas.SetActive(true);
+            gameObject.GetComponent<PlayerLocal>().force = 10000;
+        }
+        
+    }
 }

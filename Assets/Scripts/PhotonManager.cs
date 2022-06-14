@@ -12,6 +12,7 @@ public class PhotonManager : MonoBehaviourPunCallbacks
 
     void Start()
     {
+        Cursor.visible = true;
         PhotonNetwork.ConnectUsingSettings();
         PhotonNetwork.ConnectToRegion(region);
     }
@@ -46,6 +47,7 @@ public class PhotonManager : MonoBehaviourPunCallbacks
             h.Add("D", 0);
             h.Add("Team", 0);
             h.Add("Sender", "");
+            h.Add("Ready", false);
             PhotonNetwork.LocalPlayer.SetCustomProperties(h);
             PhotonNetwork.NickName = Name.text;
             PhotonNetwork.LoadLevel("Game");
