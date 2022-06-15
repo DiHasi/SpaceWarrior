@@ -13,7 +13,7 @@ public class Bullet : MonoBehaviourPunCallbacks
     public Transform capsule;
     public string sender;
     public int dmg;
-    private float lifeTime;
+    public float lifeTime;
     public int team;
 
     public bool isStart;
@@ -49,12 +49,12 @@ public class Bullet : MonoBehaviourPunCallbacks
         if (isStart)
         {
             capsule.GetComponent<Collider>().enabled = true;
-            gameObject.GetComponent<TrailRenderer>().enabled = true;
-            // photonView.RPC(nameof(RPC_ChangeTrailRender), RpcTarget.All, true);
+            // gameObject.GetComponent<TrailRenderer>().enabled = true;
+            photonView.RPC(nameof(RPC_ChangeTrailRender), RpcTarget.All, true);
             if (photonView.IsMine)
             {
                 lifeTime += Time.deltaTime;
-                if (lifeTime > 8f)
+                if (lifeTime > 1f)
                 {
                     // StartCoroutine(Del());
                     lifeTime = 0f;
@@ -62,7 +62,7 @@ public class Bullet : MonoBehaviourPunCallbacks
                     capsule.GetComponent<Collider>().enabled = false;
                     GameObject o;
                     // .GetComponent<TrailRenderer>().enabled = false;
-                    // photonView.RPC(nameof(RPC_ChangeTrailRender), RpcTarget.All, false);
+                    photonView.RPC(nameof(RPC_ChangeTrailRender), RpcTarget.All, false);
                     gameObject.GetComponent<TrailRenderer>().enabled = false;
                     (o = gameObject).GetComponent<Rigidbody>().velocity = Vector3.zero;
                     o.GetComponent<Rigidbody>().isKinematic = true;

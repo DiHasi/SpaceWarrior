@@ -43,7 +43,7 @@ public class PlayerLocal : MonoBehaviourPunCallbacks
         if (photonView.IsMine)
         {
             StartPosition = rect.transform.position;
-            Cursor.visible = false;
+            // Cursor.visible = false;
             Rigidbody = GetComponent<Rigidbody>();
             Rigidbody.maxAngularVelocity = 500f;
         }

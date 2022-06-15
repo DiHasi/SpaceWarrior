@@ -37,6 +37,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     public GameObject Collider;
     public GameObject TrailRenderer1;
     public GameObject TrailRenderer2;
+    public GunScript GunScript;
 
     [Header("Audio")]
     public AudioClip fireClip;
@@ -79,8 +80,8 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         {
             // PlayerLocal.enabled = false;
             // Canvas.SetActive(false); 
-            
-            
+
+            GunScript.enabled = false;
             // gameObject.GetComponent<PlayerLocal>().force = 0;
             // PlayerLocal.enabled = false;
             // gameObject.GetComponent<RayScript>().enabled = false;
@@ -455,33 +456,11 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     [PunRPC]
     public void RPC_Respawn()
     {
-        
-        // photonView.RPC(nameof(RPC_ChangeRender), RpcTarget.All, false);
-        // if (photonView.IsMine)
-        // {
-        //     if (myTeam == 1)
-        //     {
-        //         photonView.transform.position = spawnPosition;
-        //         photonView.transform.rotation = Quaternion.Euler(0, 0, 0);
-        //     }
-        //     else if (myTeam == 2)
-        //     {
-        //         photonView.transform.position = spawnPosition;
-        //         photonView.transform.rotation = Quaternion.Euler(0, 180, 0);
-        //     }
-        // }
-        //
-        //
-        // if (photonView.IsMine)
-        // {
-        //     playerHp = 500;
-        //     photonView.RPC(nameof(RPC_ChangeRender), RpcTarget.All, true);
-        //     photonView.RPC(nameof(RPC_ChangeColor), RpcTarget.AllBuffered, teamColor[myTeam-1].r,
-        //         teamColor[myTeam-1].g, teamColor[myTeam-1].b, 1f);
-        // }
-        // gameObject.GetComponent<PlayerLocal>().force = 0;
+
         if (photonView.IsMine)
         {
+            GunScript.enabled = true;
+            Cursor.visible = false;
             PlayerLocal.enabled = true;
             gameObject.GetComponent<RayScript>().enabled = true;
             CrosshairManager.enabled = true;

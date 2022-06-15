@@ -72,6 +72,7 @@ MonoBehaviour:
   capsule: {fileID: 3444901766310482569}
   sender: 
   dmg: 10
+  lifeTime: 0
   team: 0
   isStart: 0
   BulletSpeed: 130000

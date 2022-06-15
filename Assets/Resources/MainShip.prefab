@@ -4350,8 +4350,9 @@ MonoBehaviour:
   Avatar: {fileID: 0}
   isDead: 0
   Collider: {fileID: 1375176896701146362}
-  TrailRenderer1: {fileID: 158614167452842329}
-  TrailRenderer2: {fileID: 684048618111376723}
+  TrailRenderer1: {fileID: 7466358490268316834}
+  TrailRenderer2: {fileID: 70932653562137118}
+  GunScript: {fileID: 5715547707559672503}
   fireClip: {fileID: 8300000, guid: 50238a32333496c46bf4f0eef34ca63c, type: 3}
   fireSource: {fileID: 0}
   AudioMixer: {fileID: 24100000, guid: c90eced1d22729149abdfe631626149c, type: 2}
@@ -4422,7 +4423,7 @@ MonoBehaviour:
     TeleportIfDistanceGreaterThan: 3
     InterpolateOption: 4
     InterpolateMoveTowardsSpeed: 1
-    InterpolateLerpSpeed: 14.31
+    InterpolateLerpSpeed: 9
     ExtrapolateOption: 1
     ExtrapolateSpeed: 1
     ExtrapolateIncludingRoundTripTime: 0
@@ -6161,7 +6162,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &4834682823707770389
 RectTransform:
   m_ObjectHideFlags: 0
