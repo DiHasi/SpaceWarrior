@@ -51,48 +51,31 @@ public class GunScript : MonoBehaviourPunCallbacks
         }
         
     }
-
-    public IEnumerator SpawnEnumerator()
+    
+    public IEnumerator SpawnEnumerator2()
     {
         GameObject prefab = bullet;
         prefab.GetComponent<TrailRenderer>().time = trailRenderTime;
         foreach (var gun in guns)
         {
-            var b1 = PhotonNetwork.Instantiate(prefab.name, gun.transform.position, gun.transform.rotation);
-            b1.GetComponent<PhotonView>().RPC("Set", RpcTarget.All, photonView.Owner.NickName, 
-                photonView.Owner.CustomProperties["Team"]);
-            _time = 0f;
-        }
-
-        yield return null;
-    }
-    public IEnumerator SpawnEnumerator2()
-    {
-        // GameObject prefab = bullet;
-        // prefab.GetComponent<TrailRenderer>().time = trailRenderTime;
-        foreach (var gun in guns)
-        {
-            var bulletsList = GameObject.Find("Bullets").GetComponent<Bullets>().BulletsList;
-            var prefab = bulletsList[0];
-            bulletsList.RemoveAt(0);
-            // prefab.GetComponent<Rigidbody>().position = gun.transform.position;
-            // prefab.GetComponent<Rigidbody>().rotation = gun.transform.rotation;
-            prefab.transform.position = gun.transform.position;
-            prefab.transform.rotation = gun.transform.rotation;
-            prefab.GetComponent<Bullet>().Shoot();
+            var b = Instantiate(prefab, gun.transform.position, gun.transform.rotation);
             if (photonView.IsMine)
             {
+                b.GetComponent<Bullet>().team = (int)photonView.Owner.CustomProperties["Team"];
+                b.GetComponent<Bullet>().sender = photonView.Owner.NickName;
+                var g = gun.transform;
                 photonView.RPC("RPC_ShootSound", RpcTarget.All);
+                var position = g.position;
+                var rotation = g.rotation;
+                
+                photonView.RPC("SpawnBullet", RpcTarget.Others, 
+                    position.x, position.y, position.z, rotation.x, rotation.y, rotation.z, rotation.w, trailRenderTime);
             }
-            
-            // var b1 = PhotonNetwork.Instantiate(prefab.name, gun.transform.position, gun.transform.rotation);
-            prefab.GetComponent<PhotonView>().RPC("Set", RpcTarget.All, photonView.Owner.NickName, 
-                photonView.Owner.CustomProperties["Team"]);
             _time = 0f;
         }
 
         yield return null;
     }
 
-
+    
 }

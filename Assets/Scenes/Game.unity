@@ -899,6 +899,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: 8mainbuilding v8
       objectReference: {fileID: 0}
+    - target: {fileID: 5944298710688955610, guid: 36cb7625c3b0d934f918c5088da3b4bb, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6428242515658090080, guid: 36cb7625c3b0d934f918c5088da3b4bb, type: 3}
       propertyPath: m_RootOrder
       value: 2
@@ -1080,7 +1084,7 @@ AudioListener:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 183834711}
-  m_Enabled: 0
+  m_Enabled: 1
 --- !u!20 &183834713
 Camera:
   m_ObjectHideFlags: 0
@@ -3933,7 +3937,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1245187093
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4809,7 +4813,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   defaultTimerTime: 300
-  startTime: 20
+  startTime: 5
   timer: 0
   textTime: {fileID: 670151406}
   winner: {fileID: 82404702}
@@ -6285,7 +6289,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &2018753098
 MonoBehaviour:
   m_ObjectHideFlags: 0

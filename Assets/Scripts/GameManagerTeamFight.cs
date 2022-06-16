@@ -58,19 +58,6 @@ public class GameManagerTeamFight : MonoBehaviourPunCallbacks
     
     public void UpdateTeam()
     {
-        // var p = PhotonNetwork.PlayerList;
-        // if (p.Count(p => (int) p.CustomProperties["Team"] == 1) > p.Count(p => (int) p.CustomProperties["Team"] == 2))
-        // {
-        //     nextTeam = 2;
-        // }
-        // else if(p.Count(p => (int) p.CustomProperties["Team"] == 1) < p.Count(p => (int) p.CustomProperties["Team"] == 2))
-        // { 
-        //     nextTeam = 1;
-        // }
-        // else
-        // {
-        //     nextTeam = 1;
-        // }
         if (nextTeam == 1)
         {
             nextTeam = 2;
@@ -97,7 +84,7 @@ public class GameManagerTeamFight : MonoBehaviourPunCallbacks
 
     public IEnumerator StartCor()
     {
-        yield return new WaitForSeconds(7);
+        yield return new WaitForSeconds(1);
         if (PhotonNetwork.PlayerList.ToList().All(p => p.CustomProperties["Ready"] != null))
         {
             if (PhotonNetwork.PlayerList.ToList().All(p => (bool) p.CustomProperties["Ready"]))
@@ -112,11 +99,5 @@ public class GameManagerTeamFight : MonoBehaviourPunCallbacks
         {
             yield return null;
         }
-        
     }
-
-    // public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
-    // {
-    //     throw new NotImplementedException();
-    // }
 }

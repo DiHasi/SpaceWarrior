@@ -61,6 +61,7 @@ MonoBehaviour:
   - Ready
   - RPC_ChangeTrailRender
   - RPC_Respawn
+  - SpawnBullet
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

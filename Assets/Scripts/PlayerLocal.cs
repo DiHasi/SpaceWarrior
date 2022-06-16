@@ -21,8 +21,9 @@ public class PlayerLocal : MonoBehaviourPunCallbacks
     public bool PauseMenuActive = false;
     public Canvas Menu;
     public CrosshairManager CrosshairManager;
-    
 
+    public Manager Manager;
+    
     public float rotationSpeed = 10f;
     public float step = 5f;
 
@@ -58,16 +59,13 @@ public class PlayerLocal : MonoBehaviourPunCallbacks
     {
         if (photonView.IsMine)
         {
-            if (Input.GetKeyUp(KeyCode.Escape))
-            {
-                SwitchPauseMenu();
-            }
+
             Mover2();
         }
     }
     void Mover2()
     {
-        if (!PauseMenuActive)
+        if (!Manager.PauseMenuActive)
         {
             float mouseX = Input.GetAxis("Mouse X");
             float mouseY = Input.GetAxis("Mouse Y");
@@ -114,21 +112,5 @@ public class PlayerLocal : MonoBehaviourPunCallbacks
         Rigidbody.AddRelativeForce(0f, 0f, force);
     }
 
-    private void SwitchPauseMenu()
-    {
-        if (photonView.IsMine)
-        {
-            CrosshairManager.enabled = PauseMenuActive;
-            rect.SetActive(PauseMenuActive);
-            gun.gameObject.GetComponent<GunScript>().enabled = PauseMenuActive;
-            PauseMenuActive = !PauseMenuActive;
-            Menu.enabled = PauseMenuActive;
-            Cursor.visible = PauseMenuActive;
-        }
-        // GetComponent<PlayerLocal>().enabled = PauseMenuActive;
-    }
-    public void Exit()
-    {
-        Application.Quit();
-    }
+
 }

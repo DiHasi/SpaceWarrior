@@ -38,6 +38,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     public GameObject TrailRenderer1;
     public GameObject TrailRenderer2;
     public GunScript GunScript;
+    public GameObject bullet;
 
     [Header("Audio")]
     public AudioClip fireClip;
@@ -78,18 +79,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
         if (photonView.IsMine)
         {
-            // PlayerLocal.enabled = false;
-            // Canvas.SetActive(false); 
-
             GunScript.enabled = false;
-            // gameObject.GetComponent<PlayerLocal>().force = 0;
-            // PlayerLocal.enabled = false;
-            // gameObject.GetComponent<RayScript>().enabled = false;
-            // CrosshairManager.enabled = false;
-            // Canvas.SetActive(false);
-            //
-            
-            
             photonView.RPC("RPC_GetTeam", RpcTarget.MasterClient);
             Collider.SetActive(false);
         }
@@ -100,7 +90,6 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     {
         if (photonView.IsMine)
         {
-            // Debug.Log(gameObject.transform.position);
             if (!flag && myTeam != 0)
             {
                 ExitGames.Client.Photon.Hashtable h = new ExitGames.Client.Photon.Hashtable();
@@ -119,15 +108,14 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                     photonView.transform.rotation = Quaternion.Euler(0, 180, 0);
                 }
 
+                
+                
                 AudioSource audio = gameObject.AddComponent<AudioSource> ();
                 audio.clip = fightClip;
                 audio.playOnAwake = false;
                 audio.outputAudioMixerGroup = AudioMixer.FindMatchingGroups("Master")[2];
 
                 audio.volume = 0.1f;
-                // audioRPC.spatialBlend = 1;
-                // audioRPC.minDistance = 25;
-                // audioRPC.maxDistance = 250;
                 audio.Play();
                 
                 photonView.RPC(nameof(RPC_ChangeColor), RpcTarget.AllBuffered, teamColor[myTeam-1].r,
@@ -145,25 +133,11 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                     }
                 }
                 flag = true;
-                // GameObject? gm = GameObject.Find("GameManager");
-                // if (flag && gm.GetComponent<GameManagerTeamFight>().isStart)
-                // {
-                //     gameObject.GetComponent<Renderer>().enabled = true;
-                //     gameObject.GetComponent<PlayerLocal>().enabled = true;
-                //     gameObject.GetComponent<PlayerLocal>().camera.SetActive(true);
-                //     Canvas.SetActive(true);
-                // }
             }
 
             GameObject? gm = GameObject.Find("GameManager");
             if (flag && gm.GetComponent<GameManagerTeamFight>().isStart && !flag1)
             {
-                
-                // gameObject.GetComponent<Renderer>().enabled = true;
-                // gameObject.GetComponent<PlayerLocal>().enabled = true;
-                // gameObject.GetComponent<PlayerLocal>().camera.SetActive(true);
-                // Canvas.SetActive(true);
-                
                 gameObject.GetComponent<Renderer>().enabled = true;
                 gameObject.GetComponent<PlayerLocal>().enabled = false;
                 gameObject.GetComponent<PlayerLocal>().camera.SetActive(true);
@@ -226,7 +200,6 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                     photonView.RPC(nameof(KilledOutput), ldp, photonView.Owner.NickName);
                     ExitGames.Client.Photon.Hashtable h = new ExitGames.Client.Photon.Hashtable();
                     h.Add("K", ((int)ldp.CustomProperties["K"]) + 1);
-                    // h.Add("D", (int)ldp.CustomProperties["D"]);
                     ldp.SetCustomProperties(h);
                 }
             }
@@ -235,8 +208,6 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
             StartCoroutine(Respawn());
         }
-
-        
     }
     
     public IEnumerator Respawn()
@@ -300,9 +271,6 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     [PunRPC]
     public void RPC_ShootSound()
     {
-        // Debug.Log("jisfdjgi");
-        // gameObject.GetComponent<AudioSource>().PlayOneShot(fireClip);
-        // fireSource.PlayOneShot(fireClip);
         AudioSource audioRPC = gameObject.AddComponent<AudioSource> ();
         audioRPC.clip = fireClip;
         audioRPC.playOnAwake = false;
@@ -327,7 +295,6 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 playerHp -= dmg;
                 StartCoroutine(TookDamage());
                 HealthLine.fillAmount = playerHp/500f;
-                // Debug.Log(playerHp/500f);
             }
         }
     }
@@ -437,11 +404,6 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         }
         PhotonNetwork.LoadLevel("Menu");
     }
-    // public override void OnRoomListUpdate(List<RoomInfo> roomList)
-    // {
-    //     GameObject? gm1 = GameObject.Find("GameManager");
-    //     gm1.GetComponent<TabControl>().TabOutput();
-    // }
 
     public void TabOutline()
     {
@@ -468,5 +430,19 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             gameObject.GetComponent<PlayerLocal>().force = 10000;
         }
         
+    }
+    
+    [PunRPC]
+    public void SpawnBullet(float x, float y,float z,float xr,float yr,float zr, float wr, float trailRenderTime)
+    {
+        StartCoroutine(SB(x, y, z, xr, yr, zr, wr, trailRenderTime));
+    }
+
+    private IEnumerator SB(float x, float y,float z,float xr,float yr,float zr, float wr, float trailRenderTime)
+    {
+        GameObject prefab = bullet;
+        prefab.GetComponent<TrailRenderer>().time = trailRenderTime;
+        Instantiate(prefab, new Vector3(x, y, z), new Quaternion(xr, yr, zr, wr));
+        yield return null;
     }
 }

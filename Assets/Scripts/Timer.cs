@@ -76,11 +76,8 @@ public class Timer : MonoBehaviourPunCallbacks, IPunObservable
                 {
                     if (flagA)
                     {
-                        // WinnerCanvas.enabled = true;
-                        // KillCounterCanvas.enabled = false;
                         FindObjectsOfType<Player>().ToList().ForEach(p => p.photonView.RPC("RPC_Finish", RpcTarget.All, winner.text,
                             winner.color.r, winner.color.g, winner.color.b));
-                        // StartCoroutine(Win());
                         flagA = !flagA;
                     }
                                    
@@ -95,12 +92,10 @@ public class Timer : MonoBehaviourPunCallbacks, IPunObservable
     {
         if (stream.IsWriting)
         {
-            // Debug.Log("2114");
             stream.SendNext(timer);
         }
         else if (stream.IsReading)
         {
-            // Debug.Log("523twgerger");
             timer = (float) stream.ReceiveNext();
         }
     }
