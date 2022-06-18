@@ -45,7 +45,7 @@ public class Timer : MonoBehaviourPunCallbacks, IPunObservable
                 else if (flagB)
                 {
                     // textTime.color = Color.white;
-                    FindObjectsOfType<Player>().ToList().ForEach(p => p.photonView.RPC("RPC_Respawn", RpcTarget.All));
+                    FindObjectsOfType<Player>().ToList().ForEach(p => p.photonView.RPC("RPC_Respawn", RpcTarget.AllBuffered));
                     flagB = false;
                 }
                 else

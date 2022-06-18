@@ -20,7 +20,8 @@ public class GameManagerTeamFight : MonoBehaviourPunCallbacks
     public int nextTeam;
     public bool isStart = false;
     public float speedRot;
-    
+
+    public int playersCount = 2;
     
     public List<Vector3> spawnPositionsTeam1 = new List<Vector3>()
     {
@@ -49,7 +50,7 @@ public class GameManagerTeamFight : MonoBehaviourPunCallbacks
         var body3 = Avatar.transform.Find("Body3");
         Canvas.enabled = true;
         Camera.enabled = true;
-        
+
         body3.GetComponent<Renderer>().enabled = false;
         body3.GetComponent<PlayerLocal>().enabled = false;
         body3.GetComponent<PlayerLocal>().camera.SetActive(false);
@@ -76,7 +77,7 @@ public class GameManagerTeamFight : MonoBehaviourPunCallbacks
             Mathf.Lerp(-100, 100, speedRot)), 
             Mathf.Lerp(0, 360, speedRot));
         
-        if (PhotonNetwork.PlayerList.Length > 1 && !isStart)
+        if (PhotonNetwork.PlayerList.Length >= playersCount && !isStart)
         {
             StartCoroutine(StartCor());
         }

@@ -426,7 +426,7 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 853962030175550891}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: -2.132e-12}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1190675267029663207}
@@ -434,7 +434,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: 0, y: -92}
+  m_AnchoredPosition: {x: 0, y: -261}
   m_SizeDelta: {x: 311, y: 67.5}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &933589408692754190
@@ -3490,7 +3490,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Sounds volume
+  m_text: Music volume
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 0161d805a3764c089bef00bfe00793f5, type: 2}
   m_sharedMaterial: {fileID: 2147374, guid: 0161d805a3764c089bef00bfe00793f5, type: 2}
@@ -3727,8 +3727,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 156.02057}
-  m_SizeDelta: {x: 676.7515, y: 714.0365}
+  m_AnchoredPosition: {x: 0, y: 69.162415}
+  m_SizeDelta: {x: 676.7515, y: 540.3202}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4610306772607933989
 CanvasRenderer:
@@ -4364,7 +4364,7 @@ MonoBehaviour:
   fireClip: {fileID: 8300000, guid: 50238a32333496c46bf4f0eef34ca63c, type: 3}
   fireSource: {fileID: 0}
   AudioMixer: {fileID: 24100000, guid: c90eced1d22729149abdfe631626149c, type: 2}
-  fightClip: {fileID: 8300000, guid: 7db0fb4b6f4f95a4885acde0328429ba, type: 3}
+  fightClip: {fileID: 8300000, guid: 690352117d927a3448339340043ca52d, type: 3}
   HealthLine: {fileID: 6343106153553178193}
   ForceLine: {fileID: 2259461416669262044}
   hpCount: {fileID: 1724266945745260537}

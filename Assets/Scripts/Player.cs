@@ -86,7 +86,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     }
 
     private bool flag1 = false;
-    public void Update()
+    public void LateUpdate()
     {
         if (photonView.IsMine)
         {
@@ -113,6 +113,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 AudioSource audio = gameObject.AddComponent<AudioSource> ();
                 audio.clip = fightClip;
                 audio.playOnAwake = false;
+                audio.loop = true;
                 audio.outputAudioMixerGroup = AudioMixer.FindMatchingGroups("Master")[2];
 
                 audio.volume = 0.1f;
@@ -139,6 +140,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             if (flag && gm.GetComponent<GameManagerTeamFight>().isStart && !flag1)
             {
                 gameObject.GetComponent<Renderer>().enabled = true;
+                gameObject.GetComponent<Renderer>().enabled = true;
                 gameObject.GetComponent<PlayerLocal>().enabled = false;
                 gameObject.GetComponent<PlayerLocal>().camera.SetActive(true);
                 Canvas.SetActive(false);
@@ -159,6 +161,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 gameObject.GetComponent<PlayerLocal>().enabled = false;
                 gameObject.GetComponent<RayScript>().enabled = false;
                 gameObject.GetComponent<PlayerLocal>().force = 0;
+                gameObject.transform.GetChild(0).GetComponent<GunScript>().enabled = false;
                 CrosshairManager.enabled = false;
                 photonView.RPC(nameof(RPC_ChangeColor), RpcTarget.All, 1.0f, 0.0f, 0.0f, 1f);
             }
@@ -217,8 +220,12 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             playerHp = 0;
         }
 
-        photonView.RPC(nameof(RPC_ChangeTrailRender1), RpcTarget.AllBuffered, false);
-        photonView.RPC(nameof(RPC_ChangeTrailRender2), RpcTarget.AllBuffered, false);
+        if (photonView.IsMine)
+        {
+            photonView.RPC(nameof(RPC_ChangeTrailRender1), RpcTarget.All, false);
+            photonView.RPC(nameof(RPC_ChangeTrailRender2), RpcTarget.All, false);
+        }
+
         
         DiedCanvas.SetActive(true);
         yield return new WaitForSeconds(3);
@@ -236,9 +243,13 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 photonView.transform.rotation = Quaternion.Euler(0, 180, 0);
             }
         }
-        photonView.RPC(nameof(RPC_ChangeTrailRender1), RpcTarget.AllBuffered, true);
-        photonView.RPC(nameof(RPC_ChangeTrailRender2), RpcTarget.AllBuffered, true);
 
+        if (photonView.IsMine)
+        {
+            photonView.RPC(nameof(RPC_ChangeTrailRender1), RpcTarget.AllBuffered, true);
+            photonView.RPC(nameof(RPC_ChangeTrailRender2), RpcTarget.AllBuffered, true);
+        }
+        
         
         yield return new WaitForSeconds(1);
         if (photonView.IsMine)
@@ -248,6 +259,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             gameObject.GetComponent<Renderer>().enabled = true;
             gameObject.GetComponent<PlayerLocal>().enabled = true;
             gameObject.GetComponent<PlayerLocal>().force = 10000;
+            gameObject.transform.GetChild(0).GetComponent<GunScript>().enabled = true;
             isDead = false;
             photonView.RPC(nameof(RPC_ChangeRender), RpcTarget.All, true);
             photonView.RPC(nameof(RPC_ChangeColor), RpcTarget.AllBuffered, teamColor[myTeam-1].r,
@@ -363,12 +375,12 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     [PunRPC]
     public void RPC_ChangeTrailRender1(bool b)
     {
-        TrailRenderer1.SetActive(b);
+        gameObject.transform.Find("Jet1").GetComponent<TrailRenderer>().enabled = b;
     }
     [PunRPC]
     public void RPC_ChangeTrailRender2(bool b)
     {
-        TrailRenderer2.SetActive(b);
+        gameObject.transform.Find("Jet2").GetComponent<TrailRenderer>().enabled = b;
     }
 
     [PunRPC]
@@ -390,8 +402,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     [PunRPC]
     public void Ready()
     {
-        ExitGames.Client.Photon.Hashtable h = new ExitGames.Client.Photon.Hashtable();
-        h.Add("Ready", true);
+        Hashtable h = new Hashtable {{"Ready", true}};
         photonView.Owner.SetCustomProperties(h);
     }
     public IEnumerator Win()
@@ -418,7 +429,6 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     [PunRPC]
     public void RPC_Respawn()
     {
-
         if (photonView.IsMine)
         {
             GunScript.enabled = true;
